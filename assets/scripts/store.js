@@ -4,9 +4,8 @@ import Vuex from 'vuex'
 Vue.use(Vuex);
 
 const store = new Vuex.Store({
-    state(){
-        return {
-        }
+    state:{
+        version:1.0
     },
     mutations:{
 

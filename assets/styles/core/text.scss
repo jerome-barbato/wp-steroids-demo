@@ -1,4 +1,4 @@
-#root{
+#root, .acf-block-preview{
   color: $c-text;
   &, input, textarea, select, button{ font-family: $font-text; @extend %text-medium }
 }
@@ -64,12 +64,13 @@ html{
 
 
 .wysiwyg{
+  font-size: $font-s;
   h1{ @extend %title-main }
   h2{
     @extend %text-hero;
     @media #{$to-phone} { font-size: $font-l }
   }
-  a, email{ text-decoration: underline }
+  a, email{ text-decoration: underline; cursor: pointer }
   h3{ @extend %text-hero }
   h4{ @extend %text-medium }
   p, table, li{

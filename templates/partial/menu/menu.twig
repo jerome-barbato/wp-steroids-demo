@@ -1,11 +1,11 @@
 {% if name %}
 	<nav role="navigation" class="p-menu p-menu--{{ name }}">
-		<ul class="p-menu__items">
+		<ul class="p-menu__items p-menu__items--level1">
 			{% for item in menu[name].get_items %}
 				<li class="p-menu__item {{ item.classes | join(' ') }}">
 					<a target="{{ item.target }}" href="{{ item.link }}">{{ item.title }}</a>
 					{% if item.children %}
-						<ul class="p-menu__items">
+						<ul class="p-menu__items p-menu__items--level2">
 							{% for item in item.children %}
 								<li class="p-menu__item {{ item.classes | join(' ') }}">
 									<a target="{{ item.target }}" href="{{ item.link }}">{{ item.title }}</a>

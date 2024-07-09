@@ -4,11 +4,13 @@ let ajax_url = document.head.querySelector('meta[name="home-url"]').content+'/ap
 
 export default {
 
-    getData(){
+    getData(data){
 
         return new Promise((resolve, reject) => {
 
-            Vue.http.get(window.blog.home_url + '/app/uploads/data.json').then(response => {
+            data.action = 'getData';
+
+            Vue.http.post(ajax_url, data, {emulateJSON:true}).then(response => {
 
                 resolve(response.body);
 

@@ -16,7 +16,7 @@ This is a modified version using [Timber](https://fr.wordpress.org/plugins/timbe
 
 ## Server requirements
 
-- PHP >= 7.4, 8.2 recommended,  with GD ( jpeg, webp ), pdo_mysql, mysqli
+- PHP >= 8.1 with GD ( jpeg, webp ), pdo_mysql, mysqli
 - Curl, Git, Zip, Composer 2
 - Node 16
 - Mysql >= 5.7 or Maria DB >= 10.4

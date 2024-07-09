@@ -1,7 +1,7 @@
 /**
  * Application
  *
- * Copyright (c) 2023 - Akhela
+ * Copyright (c) 2024 - Metabolism
  *
  * License: GPL
  * Version: 2
@@ -70,6 +70,15 @@ Vue.use(Vue2TouchEvents);
 
 import VueAOS from './plugins/aos';
 Vue.use(VueAOS);
+
+Vue.http.interceptors.push((req, next) => {
+    next((res) => {
+
+        //if (res.status === xxx)
+
+        return res
+    })
+})
 
 // start app
 let app = new Vue({
@@ -203,7 +212,7 @@ let app = new Vue({
             this.isMobile = window.innerWidth<768;
             this.isTablet = window.innerWidth<=1024;
 
-            this.heights.footer = this.$refs.footer.clientHeight;
+            this.heights.footer = this.$refs.footer ? this.$refs.footer.clientHeight : 0;
             this.heights.header = this.$refs.header.clientHeight;
         },
         emit(event, params){

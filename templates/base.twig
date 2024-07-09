@@ -29,7 +29,9 @@
 </head>
 <body class="is-front is-root-container {{body_class}}">
 <div id="root">
-	{% include 'partial/header/header.twig' %}
+	{% block header %}
+		{% include 'partial/header/header.twig' %}
+	{% endblock %}
 
 	<main>
 		<div class="sections">
@@ -39,7 +41,9 @@
 		</div>
 	</main>
 
-	{% include 'partial/footer/footer.twig' %}
+	{% block footer %}
+		{% include 'partial/footer/footer.twig' %}
+	{% endblock %}
 </div>
 
 {% block javascripts %}

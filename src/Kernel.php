@@ -62,7 +62,7 @@ abstract class Kernel extends \Timber\Site {
     {
         $path = rtrim($_SERVER['REQUEST_URI'], '/');
 
-        if( wp_maintenance_mode() && !is_admin() && !is_login() && !($path == '/edition' || $path == '/edition/') ){
+        if( function_exists('wp_maintenance_mode') && wp_maintenance_mode() && !is_admin() && !is_login() && !($path == '/edition' || $path == '/edition/') ){
 
             $templates = array( 'maintenance.twig' );
             $context = Timber::context();
@@ -250,11 +250,18 @@ abstract class Kernel extends \Timber\Site {
 
     /**
      * @param $entryName
+     * @param $version
      * @return false|mixed
      */
-    public function asset($entryName ) {
+    public function asset($entryName, $version=0) {
 
-        return $this->manifest['build/'.$entryName]??false;
+        $url = $this->manifest['build/'.$entryName]??false;
+        $url = $url?:'/static/' . $entryName;
+
+        if( $version )
+            $url .= (strpos($url, '?' ) !== false ? '&v=' : '?v=' ).$version;
+
+        return $url;
     }
 
     /**
@@ -809,7 +816,12 @@ abstract class Kernel extends \Timber\Site {
         $twig->addFunction( new Twig\TwigFunction( 'permalink', 'get_permalink' ) );
         $twig->addFunction( new Twig\TwigFunction( 'calculated_carbon', 'get_calculated_carbon' ) );
         $twig->addFunction( new Twig\TwigFunction( 'is_front_page',  'is_front_page' ) );
+        $twig->addFunction( new Twig\TwigFunction( 'is_404',  'is_404' ) );
+        $twig->addFunction( new Twig\TwigFunction( 'is_archive',  'is_archive' ) );
+        $twig->addFunction( new Twig\TwigFunction( 'archive_title',  'get_the_archive_title' ) );
+        $twig->addFunction( new Twig\TwigFunction( 'is_singular',  'is_singular' ) );
 
+        $twig->addFilter( new Twig\TwigFilter( 'intval', 'intval' ) );
         $twig->addFilter( new Twig\TwigFilter( 'placeholder', [$this, 'placeholder'] ) );
         $twig->addFilter( new Twig\TwigFilter( 'has_block', [$this, 'hasBlock'] ) );
         $twig->addFilter( new Twig\TwigFilter( 'lottie_placeholder', [$this, 'generateLottiePlaceholder'] ) );

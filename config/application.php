@@ -11,6 +11,9 @@
 use Roots\WPConfig\Config;
 use function Env\env;
 
+// USE_ENV_ARRAY + CONVERT_* + STRIP_QUOTES
+Env\Env::$options = 31;
+
 /**
  * Directory containing all of the site's files
  *
@@ -29,12 +32,13 @@ $webroot_dir = $root_dir . '/public';
  * Use Dotenv to set required environment variables and load .env file in root
  * .env.local will override .env if it exists
  */
+if (file_exists($root_dir . '/.env')) {
 $env_files = file_exists($root_dir . '/.env.local')
     ? ['.env', '.env.local']
     : ['.env'];
 
-$dotenv = Dotenv\Dotenv::createUnsafeImmutable($root_dir, $env_files, false);
-if (file_exists($root_dir . '/.env')) {
+    $dotenv = Dotenv\Dotenv::createImmutable($root_dir, $env_files, false);
+
     $dotenv->load();
     $dotenv->required(['WP_HOME', 'WP_SITEURL']);
     if (!env('DATABASE_URL')) {
@@ -47,6 +51,13 @@ if (file_exists($root_dir . '/.env')) {
  * Default: production
  */
 define('WP_ENV', env('WP_ENV') ?: 'production');
+
+/**
+ * Infer WP_ENVIRONMENT_TYPE based on WP_ENV
+ */
+if (!env('WP_ENVIRONMENT_TYPE') && in_array(WP_ENV, ['production', 'staging', 'development', 'local'])) {
+    Config::define('WP_ENVIRONMENT_TYPE', WP_ENV);
+}
 
 /**
  * URLs
@@ -64,6 +75,10 @@ Config::define('WP_CONTENT_URL', Config::get('WP_HOME') . Config::get('CONTENT_D
 /**
  * DB settings
  */
+if (env('DB_SSL')) {
+    Config::define('MYSQL_CLIENT_FLAGS', MYSQLI_CLIENT_SSL);
+}
+
 Config::define('DB_NAME', env('DB_NAME'));
 Config::define('DB_USER', env('DB_USER'));
 Config::define('DB_PASSWORD', env('DB_PASSWORD'));
@@ -80,13 +95,6 @@ if (env('DATABASE_URL')) {
     Config::define('DB_PASSWORD', isset($dsn->pass) ? $dsn->pass : null);
     Config::define('DB_HOST', isset($dsn->port) ? "{$dsn->host}:{$dsn->port}" : $dsn->host);
 }
-
-/** Enabling support for connecting external MYSQL over SSL*/
-/*$mysql_sslconnect = env('DB_SSL_CONNECTION') ?: 'true';
-if (strtolower($mysql_sslconnect) != 'false' && !is_numeric(strpos(Config::get('DB_HOST'), "127.0.0.1")) && !is_numeric(strpos(strtolower(Config::get('DB_HOST')), "localhost"))) {
-    Config::define('MYSQL_CLIENT_FLAGS', MYSQLI_CLIENT_SSL);
-}*/
-
 
 /**
  * Authentication Unique Keys and Salts

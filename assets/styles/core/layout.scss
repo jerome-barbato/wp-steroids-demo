@@ -3,7 +3,8 @@ html{
 }
 
 * {
-  scroll-margin-top: $header-h;
+  scroll-margin-top: $space-s;
+  .has-scrolled--up &{ scroll-margin-top: $header-h }
 }
 
 body{
@@ -13,7 +14,7 @@ body{
 }
 
 .is-root-container{
-  width: 100%; overflow-x: hidden; position: relative;
+  width: 100%; position: relative;
   .container{
     margin-left: auto; margin-right: auto; display: flex; flex-flow: column;
     position: relative; max-width: $container-w; width: calc( 100% - 80px);
@@ -34,12 +35,12 @@ body{
   }
 
   main{
-    position: relative; width: 100%; margin-top: $header-h; overflow-x: hidden;
+    position: relative; width: 100%; margin-top: $header-h;
     @media print { margin-top: 0 }
   }
 
   .sections{
-    width: 100%; overflow: hidden;
+    width: 100%;
     margin-left: auto; margin-right: auto;
     min-height: calc(#{$app-init-h} - #{$header-h} - #{$footer-h});
   }
@@ -52,7 +53,7 @@ body{
   #next{ display: inline; height: 0 }
 
   #root{
-    min-height: #{$app-h}; display: flex; flex-flow: column; overflow: hidden;
+    min-height: #{$app-h}; display: flex; flex-flow: column;
   }
 
   figure{

@@ -27,7 +27,7 @@ wordpress:
   #########################
 
   image:
-    compression: 90 #on the fly compression ratio
+    compression: 95 #on the fly compression ratio
     resize: #resize image on upload to save server space
       max_width: 1920
       max_height: 2160
@@ -98,7 +98,8 @@ wordpress:
   ## Add post type support
   ## https://developer.wordpress.org/reference/functions/post_type_supports/
   post_type_support:
-    page: excerpt #add excerpt to page
+    page:
+      - excerpt #add excerpt to page
 
   ## Add theme support
   ## https://developer.wordpress.org/reference/functions/add_theme_support/
@@ -295,7 +296,7 @@ wordpress:
       #disable_for_blogs:
       #  - 2#
       #has_options: true #add acf page option to post type menu
-      #capability_type: true
+      #capability_type: post
       #publicly_queryable: false
       ## options for archive page
       #posts_per_page: 11

@@ -20,6 +20,10 @@ $templates = array( 'archive.twig', 'index.twig' );
 
 $context = Timber::context();
 
+if ( is_category() ) {
+    $context['current_category'] = get_query_var( 'cat' );
+    array_unshift( $templates, 'archive-category.twig' );
+}
 if ( is_tax() ) {
 	array_unshift( $templates, 'archive-' . get_query_var( 'taxonomy' ) . '.twig' );
 } elseif ( is_post_type_archive() ) {

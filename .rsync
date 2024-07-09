@@ -14,4 +14,5 @@ postcss.config.js
 webpack.config.js
 wml.config.js
 .rsync
+auth.json
 node_modules

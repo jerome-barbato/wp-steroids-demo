@@ -9,6 +9,7 @@ public/app/uploads/*
 public/app/cache/*
 public/build
 node_modules
+/auth.json
 
 # WordPress
 public/edition
