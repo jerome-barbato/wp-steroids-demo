@@ -8,6 +8,8 @@ This project is designed to bootstrap a custom-made website without using a them
 
 ![](.demo/screenshot.png)
 
+![](.demo/code.png)
+
 ## Features
 
 - Better folder structure
