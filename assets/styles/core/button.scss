@@ -32,3 +32,11 @@
 
 button{ color: inherit }
 
+%close{
+  width: 1em; height: 1em; display: inline-flex; align-items: center; justify-content: center; font-size: 3rem;
+  cursor: pointer; z-index: 2; @include icon('close');
+  &:after{
+    content: ''; position: overlay(); border-radius: 50%; border: 1px solid; opacity: 0.75;
+  }
+  &:before{ font-size: 35%; margin-top: 0.2em }
+}

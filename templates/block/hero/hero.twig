@@ -6,7 +6,7 @@
         {% include 'partial/cta/cta.twig' with { props: props.cta } %}
         {% if props.image %}
             <div class="b-hero__image">
-                {{ props.image|picture(800,200) }}
+                {{ props.image|picture(800,200)|placeholder }}
             </div>
         {% endif %}
     </div>

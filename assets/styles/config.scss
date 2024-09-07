@@ -12,8 +12,8 @@ $animation-offset     : 100%;
 $animation-offset-rem : 4rem;
 
 //theme
-$color-theme : #DDD0C8;
-$color-theme-alt : #F8E4E1;
+$color-theme : #001733;
+$color-theme-alt : #F2F0F0;
 
 // Colors
 $c-text: var(--c-text);
@@ -38,7 +38,7 @@ $c-image-placeholder: rgba(0,0,0,0.05);
   --app-init-height: 100vh;
   --admin-h: 0px;
   --footer-h: 22.5rem;
-  --c-border: rgba(218,218,218,0.4) ;
+  --c-border: rgba(0,0,0,0.2) ;
   --c-border-input: #bdcde1;
   --c-transparent: rgba(255,255,255,0.3) ;
   --c-placeholder-color: #93B1D9;
@@ -126,6 +126,7 @@ world2 '\e825';
 
 // Grid
 
+$grid-container-max: 1920px;
 $grid-size: 122rem;
 $grip-columns: 12;
 $grip-gap: 4rem;

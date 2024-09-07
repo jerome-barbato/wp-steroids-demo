@@ -1,8 +1,11 @@
 .b-hero{
-  background: #eee; padding: 2rem;
-  .container{ align-items: center }
-  &__suptitle{ @extend %title-small }
+  background: $c-theme-alt; padding: $space-section;
+  .container{ align-items: center; grid-gap: $space }
+  &__suptitle{ @extend %text-small }
   &__title{ @extend %title-main }
-  .p-cta{ margin-top: $space }
-  &__image{ margin-top: $space }
+  &__image{
+    width: 100%;
+    img{ margin: auto }
+    .image-placeholder{ aspect-ratio: 800/200; max-width: 800px; margin: auto }
+  }
 }

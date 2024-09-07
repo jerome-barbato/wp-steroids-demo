@@ -16,18 +16,32 @@
 
 use Timber\Timber;
 
+global $wp_query;
+
 $templates = array( 'archive.twig', 'index.twig' );
 
 $context = Timber::context();
+$context['paged'] = (get_query_var('paged')) ? get_query_var('paged') : 1;
+$context['max_num_pages'] = $wp_query->max_num_pages;
+$context['posts_per_page'] = $default_posts_per_page = get_option( 'posts_per_page' );
 
 if ( is_category() ) {
     $context['current_category'] = get_query_var( 'cat' );
     array_unshift( $templates, 'archive-category.twig' );
 }
 if ( is_tax() ) {
+
 	array_unshift( $templates, 'archive-' . get_query_var( 'taxonomy' ) . '.twig' );
+
+    if( $context['paged'] > 1 )
+        array_unshift( $templates, 'archive-' . get_query_var( 'taxonomy' ) . '-paged.twig' );
+
 } elseif ( is_post_type_archive() ) {
+
     array_unshift( $templates, 'archive-' . get_query_var( 'post_type' ) . '.twig' );
+
+    if( $context['paged'] > 1 )
+        array_unshift( $templates, 'archive-' . get_query_var( 'post_type' ) . '-paged.twig' );
 }
 
 Timber::render( $templates, $context );

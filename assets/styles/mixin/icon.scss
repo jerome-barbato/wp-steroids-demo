@@ -28,7 +28,7 @@ $icons: false !default;
   }
 }
 
-[data-icon]:before, [data-icon_after]:after,
+[data-icon]:not(.dashicons):before, [data-icon_after]:after,
 [icon]:before, [icon-after]:after{ @extend %icon }
 
 @each $icon in $icons {

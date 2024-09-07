@@ -3,7 +3,11 @@
 		<ul class="p-menu__items p-menu__items--level1">
 			{% for item in menu[name].get_items %}
 				<li class="p-menu__item {{ item.classes | join(' ') }}">
-					<a target="{{ item.target }}" href="{{ item.link }}">{{ item.title }}</a>
+					{% if item.link == '#column' %}
+						<a class="p-menu__column">{{ item.title }}</a>
+					{% else %}
+						<a target="{{ item.target }}" href="{{ item.link }}">{{ item.title }}</a>
+					{% endif %}
 					{% if item.children %}
 						<ul class="p-menu__items p-menu__items--level2">
 							{% for item in item.children %}

@@ -22,7 +22,7 @@ This is a modified version using [Timber](https://fr.wordpress.org/plugins/timbe
 - Mysql >= 5.7 or Maria DB >= 10.4
 - Nginx or Apache with mod_rewrite module
 
-## Installation
+## Fresh install
 
 1. Update environment variables in the `.env` file. Wrap values that may contain non-alphanumeric characters with quotes, or they may be incorrectly parsed.
 
@@ -33,7 +33,7 @@ This is a modified version using [Timber](https://fr.wordpress.org/plugins/timbe
     - `DB_HOST` - Database host
     - Optionally, you can define `DATABASE_URL` for using a DSN instead of using the variables above (e.g. `mysql://user:password@127.0.0.1:3306/db_name`)
 - `WP_ENV` - Set to environment (`development`, `staging`, `production`)
-- `WP_HOME` - Full URL to WordPress home (https://example.com)
+- `WP_HOME` - Full URL to WordPress home (http://wordpress.io)
 - `ACF_PRO_KEY` - Your ACF Licence key
 - `AUTH_KEY`, `SECURE_AUTH_KEY`, `LOGGED_IN_KEY`, `NONCE_KEY`, `AUTH_SALT`, `SECURE_AUTH_SALT`, `LOGGED_IN_SALT`, `NONCE_SALT`
     - Generate with [WordPress salts generator](https://roots.io/salts.html)
@@ -52,7 +52,19 @@ This is a modified version using [Timber](https://fr.wordpress.org/plugins/timbe
 
 5. Allow 'write' permissions to `/path/to/site/var/` and `/path/to/site/public/app/uploads`
 
-6. Access WordPress admin at `https://example.com/edition/wp-admin/`
+6. Go to the WP_HOME url and install WordPress
+
+7. Remove `demo.sql` file
+
+## Install using `demo.sql`
+
+1. Do a `Fresh install`, from step 1 to 5
+
+2. Import `demo.sql` file in your database ( demo url in sql file is http://wordpress.io, admin login : demo/demo ) or install WordPress
+
+If you need to change the url, perform a search & replace in the demo.sql, and execute in bash `php bin/fix-serialisation demo.sql`
+
+3. Remove `demo.sql` file
 
 ## Development
 

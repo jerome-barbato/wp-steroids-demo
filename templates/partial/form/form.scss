@@ -6,13 +6,13 @@
   }
   &__error{ color: red; background: rgba(255,0,0,0.1); width: 100%; padding: $space-s; border: 1px solid }
   &__reveal{
-    position: absolute; right: $space; top: 50%; @include icon('eye'); text-decoration: none!important;
-    transform: translateY(-50%);
+    position: absolute; right: $space; top: 50%; text-decoration: none!important;
+    transform: translateY(-50%); @include icon('eye');
   }
   &__field{
     position: relative; flex-basis: 100%;
     a{ text-decoration: underline; cursor: pointer }
-    &--message{ @extend %title-small-upper; margin-top: $space }
+    &--message{ margin-top: $space }
     &--select+&--captcha{ opacity: 0; pointer-events: none }
     &--half{ flex-basis: calc(50% - $space-s/2) }
     &--one-third{ flex-basis: calc(33.33% - $space-s/2) }

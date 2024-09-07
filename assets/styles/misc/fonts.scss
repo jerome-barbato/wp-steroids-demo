@@ -1,5 +1,6 @@
 $font-families : ()!default;
 $font-woof2 : true!default;
+$font-woof  : false!default;
 $font-display : auto!default;
 
 @each $font in $fonts {
@@ -13,27 +14,28 @@ $font-display : auto!default;
   $version  : nth($font, 7);
   $src      : #{$family}/#{$family}-#{$variant}-#{$style};
 
-  @if $font-woof2{
-    @font-face {
-      font-family: "#{$family}";
-      src: url('#{$font-path}/#{$src}.woff2') format('woff2'),
-      url('#{$font-path}/#{$src}.woff') format('woff');
-      font-weight: #{$weight};
-      font-style: #{$style};
-      font-stretch: #{$stretch};
-      font-display: #{$font-display};
+  @font-face {
+    font-family: "#{$family}";
+    @if $font-woof2 and $font-woof{
+      src: url('#{$font-path}/#{$src}.woff2') format('woff2'), url('#{$font-path}/#{$src}.woff') format('woff');
     }
-  }
-  @else{
-    @font-face {
-      font-family: "#{$family}";
+    @else if $font-woof2 {
+      src: url('#{$font-path}/#{$src}.woff2') format('woff2');
+    }
+    @else if $font-woof {
       src: url('#{$font-path}/#{$src}.woff') format('woff');
-      font-weight: #{$weight};
-      font-style: #{$style};
-      font-stretch: #{$stretch};
-      font-display: #{$font-display};
     }
+    @if $weight == 'variable'{
+      font-optical-sizing: auto;
+    }
+    @else {
+      font-weight: #{$weight};
+    }
+    font-style: #{$style};
+    font-stretch: #{$stretch};
+    font-display: #{$font-display};
   }
+
 
   @if not map-has-key($font-families, to-lower-case($family)){
     $new-font: (to-lower-case($family): '#{$family}, #{$fallback}');

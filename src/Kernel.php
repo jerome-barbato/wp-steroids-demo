@@ -5,6 +5,7 @@
  * Add most used twig functions and filters
  */
 
+use Timber\Factory\PostFactory;
 use Timber\Image;
 use Timber\ImageHelper;
 use Timber\Timber;
@@ -273,10 +274,10 @@ abstract class Kernel extends \Timber\Site {
      * @param $loading
      * @return string
      */
-    public function generatePicture($src, $width, $height=0, $sources=[], $alt=false, $loading='lazy') {
+    public function generateFigure($src, $width, $height=0, $sources=[], $alt=false, $loading='lazy') {
 
         $post_id = false;
-        $crop = 'center';
+        $html = '';
 
         if( $src instanceof Image )
             $post_id = $src->id;
@@ -287,24 +288,120 @@ abstract class Kernel extends \Timber\Site {
 
         if( $post_id ){
 
+            $post = get_post($post_id);
+
+            $image = $this->generatePicture($src, $width, $height, $sources, $alt, $loading);
+            $html = '<figure class="figure'.(strlen($post->post_excerpt)?' has-caption':'').'">';
+            $html .= $image;
+
+            if( strlen($post->post_excerpt) )
+                $html .= '<figcaption>'.$post->post_excerpt.'</figcaption>';
+
+            $html .= '</figure>';
+        }
+
+        return $html;
+    }
+
+    /**
+     * @param $width
+     * @param int $height
+     * @return string
+     */
+    public function generatePlaceholder($width, $height=0) {
+
+        $params = '';
+
+        if( !$width ){
+
+            $params = '?text=0x'.$height;
+            $width = $height;
+        }
+
+        if( !$height ){
+
+            $params = '?text='.$width.'x0';
+            $height = $width;
+        }
+
+        $height = !$height?$width:$height;
+        $width = !$width?$height:$width;
+
+        return 'https://placehold.co/'.$width.'x'.$height.$params;
+    }
+
+    /**
+     * @param $src
+     * @param $width
+     * @param int $height
+     * @param string $crop
+     * @return string
+     */
+    public function resizeImage($src, $width, $height=0, $crop='center') {
+
+        $debug = ($_GET['debug']??false) == 'image' && defined('WP_DEBUG') && WP_DEBUG;
+
+        if( $debug )
+            return $this->generatePlaceholder($width, $height);
+        else
+            return ImageHelper::resize($src, $width, $height, $crop);
+    }
+
+    /**
+     * @param $src
+     * @param $width
+     * @param $height
+     * @param $sources
+     * @param $alt
+     * @param $loading
+     * @return string
+     */
+    public function generatePicture($image, $width, $height=0, $sources=[], $alt=false, $loading='lazy') {
+
+        $post_id = false;
+        $debug = ($_GET['debug']??false) == 'image' && defined('WP_DEBUG') && WP_DEBUG;
+        $crop = 'center';
+
+        if( $image instanceof Image )
+            $post_id = $image->id;
+        elseif( is_array($image) )
+            $post_id = $image['ID']??false;
+        elseif( is_int($image) )
+            $post_id = $image;
+
+        if( $post_id ){
+
+            $src = wp_get_original_image_path($post_id);
+            if( !file_exists($src) )
+                return '';
+
             if( $_crop = get_post_meta($post_id, 'crop', true) )
                 $crop = $_crop;
 
-            if( !is_array($src) )
-                $src = acf_get_attachment($post_id);
+            if( !is_array($image) or !isset($image['url'], $image['alt'], $image['mime_type']) ){
+
+                $attachment = get_post( $post_id );
+
+                $image = [
+                    'url' => wp_get_attachment_url( $attachment->ID ),
+                    'alt' => get_post_meta( $attachment->ID, '_wp_attachment_image_alt', true ),
+                    'mime_type' => $attachment->post_mime_type
+                ];
+            }
         }
 
-        if( !$src )
+        if( !$image )
             return '';
 
         $ext = function_exists('imagewebp') ? 'webp' : null;
-        $mime = function_exists('imagewebp') ? 'image/webp' : $src['mime_type'];
+        $mime = function_exists('imagewebp') ? 'image/webp' : $image['mime_type'];
 
         $html = '<picture>';
 
-        if($src['mime_type'] == 'image/svg+xml' || $src['mime_type'] == 'image/svg' || $src['mime_type'] == 'image/gif' ){
+        if($image['mime_type'] == 'image/svg+xml' || $image['mime_type'] == 'image/svg' || $image['mime_type'] == 'image/gif' ){
 
-            $html .= '<img loading="'.$loading.'" src="'.$src['url'].'" alt="'.$src['alt'].'" '.($width?'width="'.$width.'"':'').' '.($height?'height="'.$height.'"':'').'/>';
+            $img_src = $debug ? $this->generatePlaceholder($width, $height) : $image['url'];
+            $html .= '<img loading="'.$loading.'" src="'.$img_src.'" alt="'.$image['alt'].'" '.($width?'width="'.$width.'"':'').' '.($height?'height="'.$height.'"':'').'/>';
         }
         else {
 
@@ -320,12 +417,12 @@ abstract class Kernel extends \Timber\Site {
 
                     if ($ext == 'webp') {
 
-                        $webp_src = ImageHelper::img_to_webp($src['url']);
-                        $url = ImageHelper::resize($webp_src, $size[0] ?? 0, $size[1] ?? 0, $crop);
+                        $webp_src = ImageHelper::img_to_webp($image['url']);
+                        $url = $this->resizeImage($webp_src, $size[0] ?? 0, $size[1] ?? 0, $crop);
 
                         if( ($target_width > 0 && $target_width < 960) || ($target_height > 0 && $target_height < 960) ) {
 
-                            $url_2x = ImageHelper::resize($webp_src, $target_width * 2, $target_height * 2, $crop);
+                            $url_2x = $this->resizeImage($webp_src, $target_width * 2, $target_height * 2, $crop);
                             $html .= '<source media="(' . $media . ')" srcset="' . $url . ' 1x, ' . $url_2x . ' 2x" type="' . $mime . '"/>';
                         }
                         else{
@@ -334,28 +431,28 @@ abstract class Kernel extends \Timber\Site {
                         }
                     }
 
-                    $url = ImageHelper::resize($src['url'], $size[0] ?? 0, $size[1] ?? 0, $crop);
+                    $url = $this->resizeImage($image['url'], $size[0] ?? 0, $size[1] ?? 0, $crop);
 
                     if( ($target_width > 0 && $target_width < 960) || ($target_height > 0 && $target_height < 960) ){
 
-                        $url_2x = ImageHelper::resize($src['url'], $target_width*2, $target_height*2, $crop);
-                        $html .= '<source media="(' . $media . ')" srcset="' . $url . ' 1x, '.$url_2x.' 2x" type="' . $src['mime_type'] . '"/>';
+                        $url_2x = $this->resizeImage($image['url'], $target_width*2, $target_height*2, $crop);
+                        $html .= '<source media="(' . $media . ')" srcset="' . $url . ' 1x, '.$url_2x.' 2x" type="' . $image['mime_type'] . '"/>';
                     }
                     else{
 
-                        $html .= '<source media="(' . $media . ')" srcset="' . $url . '" type="' . $src['mime_type'] . '"/>';
+                        $html .= '<source media="(' . $media . ')" srcset="' . $url . '" type="' . $image['mime_type'] . '"/>';
                     }
                 }
             }
 
             if ($ext == 'webp') {
 
-                $webp_src = ImageHelper::img_to_webp($src['url']);
-                $url = ImageHelper::resize($webp_src, $width, $height, $crop);
+                $webp_src = ImageHelper::img_to_webp($image['url']);
+                $url = $this->resizeImage($webp_src, $width, $height, $crop);
 
                 if( ( $width> 0 && $width < 960 ) || ( $height > 0 && $height < 960 ) ){
 
-                    $url_2x = ImageHelper::resize($webp_src, $width*2, $height*2, $crop);
+                    $url_2x = $this->resizeImage($webp_src, $width*2, $height*2, $crop);
                     $html .= '<source srcset="' . $url . ' 1x, '.$url_2x.' 2x" type="image/webp"/>';
                 }
                 else{
@@ -364,14 +461,14 @@ abstract class Kernel extends \Timber\Site {
                 }
             }
 
-            $url = ImageHelper::resize($src['url'], $width, $height, $crop);
+            $url = $this->resizeImage($image['url'], $width, $height, $crop);
 
             $au = ImageHelper::analyze_url($url);
             $upload_dir = wp_upload_dir();
 
             $image_info = getimagesize($upload_dir['basedir'].$au['subdir'].'/'.$au['basename']);
 
-            $html .= '<img loading="' . $loading . '" src="' . $url . '" alt="' . ($alt ?: $src['alt']) . '" '.($image_info[0]?'width="'.$image_info[0].'"':'').' '.($image_info[1]?'height="'.$image_info[1].'"':'').'/>';
+            $html .= '<img loading="' . $loading . '" src="' . $url . '" alt="' . ($alt ?: $image['alt']) . '" '.($image_info[0]?'width="'.$image_info[0].'"':'').' '.($image_info[1]?'height="'.$image_info[1].'"':'').'/>';
         }
 
         $html .='</picture>';
@@ -395,7 +492,9 @@ abstract class Kernel extends \Timber\Site {
         }
         else{
 
-            if( $_GET['debug']??'' == 'translation' && is_user_logged_in() )
+            $debug = ($_GET['debug']??false) == 'translation' && defined('WP_DEBUG') && WP_DEBUG;
+
+            if( $debug )
                 return '{{'.htmlspecialchars($text).'}}';
 
             return vsprintf($text, $params);
@@ -794,6 +893,20 @@ abstract class Kernel extends \Timber\Site {
         return '<img src="'.$this->generatePixel($w, $h).'" style="'.($max_h?'max-height:'.$max_h.'px':'').($max_w?';max-width:'.$max_w.'px':'').'"/>';
     }
 
+    /**
+     * @param $state
+     * @return object|bool
+     */
+    public function getPageByState($state){
+
+        $postFactory = new PostFactory();
+
+        if( $post = get_page_by_state($state) )
+            return $postFactory->from($post);
+
+        return false;
+    }
+
     /** This is where you can add your own functions to twig.
      *
      * @param Twig_Environment $twig get extension.
@@ -818,8 +931,10 @@ abstract class Kernel extends \Timber\Site {
         $twig->addFunction( new Twig\TwigFunction( 'is_front_page',  'is_front_page' ) );
         $twig->addFunction( new Twig\TwigFunction( 'is_404',  'is_404' ) );
         $twig->addFunction( new Twig\TwigFunction( 'is_archive',  'is_archive' ) );
+        $twig->addFunction( new Twig\TwigFunction( 'is_sticky',  'is_sticky' ) );
         $twig->addFunction( new Twig\TwigFunction( 'archive_title',  'get_the_archive_title' ) );
         $twig->addFunction( new Twig\TwigFunction( 'is_singular',  'is_singular' ) );
+        $twig->addFunction( new Twig\TwigFunction( 'get_page_by_state',  [$this, 'getPageByState'] ) );
 
         $twig->addFilter( new Twig\TwigFilter( 'intval', 'intval' ) );
         $twig->addFilter( new Twig\TwigFilter( 'placeholder', [$this, 'placeholder'] ) );
@@ -828,10 +943,11 @@ abstract class Kernel extends \Timber\Site {
         $twig->addFilter( new Twig\TwigFilter( 'handle', 'sanitize_title' ) );
         $twig->addFilter( new Twig\TwigFilter( 'table', [$this, 'generateTable'] ) );
         $twig->addFilter( new Twig\TwigFilter( 'picture', [$this, 'generatePicture'] ) );
+        $twig->addFilter( new Twig\TwigFilter( 'figure', [$this, 'generateFigure'] ) );
         $twig->addFilter( new Twig\TwigFilter( 't', [$this,'translate'] ) );
         $twig->addFilter( new Twig\TwigFilter( 'ucfirst', 'ucfirst' ) );
         $twig->addFilter( new Twig\TwigFilter( 'encrypt', [$this,'encrypt'] ) );
-        $twig->addFilter( new Twig\TwigFilter( 'protect_email', [$this,'protectEmail'] ) );
+        $twig->addFilter( new Twig\TwigFilter( 'protect', [$this,'protectEmail'] ) );
         $twig->addFilter( new Twig\TwigFilter( 'encode', [$this,'encode'] ) );
         $twig->addFilter( new Twig\TwigFilter( 'bind', [$this,'bind'] ) );
         $twig->addFilter( new Twig\TwigFilter( 'nl2p', [$this,'lineBreakToP'] ) );

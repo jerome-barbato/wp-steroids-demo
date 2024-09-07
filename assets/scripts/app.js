@@ -235,6 +235,16 @@ let app = new Vue({
         window.addEventListener('scroll', this.catchScroll);
         window.addEventListener('resize', this.catchResize);
 
+        if( typeof navigator.userAgentData == 'undefined' ){
+
+            if( navigator.userAgent.toLowerCase().indexOf("android") === -1 && navigator.userAgent.toLowerCase().indexOf("iphone") === -1 )
+                document.body.classList.add('desktop')
+        }
+        else if(!navigator.userAgentData.mobile){
+
+            document.body.classList.add('desktop')
+        }
+
         eventBus.$on('popin', (html)=>{
 
             this.popin = html

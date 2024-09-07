@@ -134,7 +134,9 @@ Config::define('DISALLOW_FILE_EDIT', true);
 // Disable plugin and theme updates and installation from the admin
 Config::define('DISALLOW_FILE_MODS', true);
 // Limit the number of post revisions that WordPress stores (true (default WP): store every revision)
-Config::define('WP_POST_REVISIONS', env('WP_POST_REVISIONS') ?: true);
+Config::define('WP_POST_REVISIONS', env('WP_POST_REVISIONS') ?: 10);
+// Increase memory limit
+Config::define('WP_MEMORY_LIMIT', env('WP_MEMORY_LIMIT') ?: '512M');
 
 /**
  * Redefine cookie name without WordPress

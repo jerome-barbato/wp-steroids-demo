@@ -65,15 +65,17 @@ a {
 
 
 input, textarea {
-	outline: none;
+	outline: none; color: inherit
 }
+
+select{ color: inherit }
 
 input, button {
 	-webkit-appearance: none
 }
 
-sub{ font-size: min(13px, max(10px, 60%)) }
-sup{ font-size: min(13px, max(10px, 50%)) }
+sub{ font-size: max(10px, 60%) }
+sup{ font-size: max(10px, 50%) }
 
 textarea {
 	resize: none;

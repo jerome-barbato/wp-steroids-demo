@@ -1,24 +1,26 @@
-.edit-post-visual-editor__post-title-wrapper{ margin-top: 0!important }
-.edit-post-visual-editor__post-title-wrapper h1{ font-size: revert; margin: revert }
+.edit-post-visual-editor__post-title-wrapper{ width: calc(100% - 40px); max-width: 1440px; margin: auto; margin-top: 0!important }
+.edit-post-visual-editor__post-title-wrapper h1{ font-size: revert; margin: revert; line-height: 1.2 }
 
 .wp-block{
   .editor-styles-wrapper &{ max-width: none }
 }
 
-.block-editor-block-list__layout, .edit-post-visual-editor__post-title-wrapper{
+.block-editor-block-list__layout{
   max-width: 1440px; margin: auto; overflow: hidden;
 }
 
 .acf-block-preview{
-  margin: $space-section 0;
+  --admin-h: 0px;
+  --header-h: 0px;
+  --space-section: 6rem;
+  position: relative; z-index: 1;
   p{ font-size: inherit }
   .wp-block:first-of-type &{ margin-top: 0 }
   .wp-block:last-of-type &{ margin-bottom: 0 }
 }
 
 .is-desktop-preview {
-  .container{ width: 100%!important; }
-  .is-root-container{ max-width:1440px; background: #fff; padding: 1px; box-shadow: 0 0 6px rgb(0 0 0 / 5%); min-height: calc(100vh - 170px) }
+  &.is-root-container, .is-root-container{ width: calc(100% - 40px); max-width:1440px; background: #fff; box-shadow: 0 0 6px rgb(0 0 0 / 5%); min-height: calc(100vh - 170px) }
   .editor-styles-wrapper{ background: #eee; padding: 20px!important }
 }
 

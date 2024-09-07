@@ -1,21 +1,18 @@
 @import "vue-ssr-carousel/index.css";
 
-.ssr-carousel{
+.ssr-carousel, %ssr-carousel{
   width: 100%; position: relative;
-  &-back-button, &-next-button{
-    position: static; transform: none; margin-top: $space;
-  }
+  &-mask.disabled .ssr-carousel-track{ justify-content: left }
   &-mask.disabled &-slide[aria-hidden='true']{ display: revert }
-  &-next-button{ margin-left: $space }
   &-track{ justify-content: left }
   &-slide[href="#"]{ cursor: inherit }
   &-dots{
-    justify-content: flex-end; position: absolute; bottom: $space-s; right: $space-s;
+    justify-content: center; position: absolute; bottom: $space-s; right: $space-s; width: 100%;
   }
   &-dot-icon{
-    width: 6px; height: 6px; border: 0; background: #ddd ; margin: 0 2px; transition: allow(background);
-    [disabled] > &{ background: #000 }
-    :not([disabled]) > &{ opacity: 1 }
+    width: 8px; height: 8px; border: 0; background: #fff ; margin: 0 4px; transition: allow(background opacity);
+    [aria-disabled] > &{ opacity: 0.4; background: #fff }
+    :not([aria-disabled]) > &{ opacity: 1 }
   }
   &-dot-button{
     line-height: 1!important;
@@ -25,33 +22,37 @@
 
 ssr-carousel{
   display: flex; visibility: visible; overflow: hidden;
-  > *{ flex-shrink: 0; margin-right: 40px; width: 100% }
+  > *{ flex-shrink: 0; margin-right: 20px; width: 100% }
+  &[\:rtl="true"]{ direction:rtl }
   &[\:gutter="30"]> *{ margin-right: 30px }
   &[\:gutter="20"]> *{ margin-right: 20px }
+  &[\:gutter="0"]> *{ margin-right: 0 }
   &[\:slides-per-page="null"]> *{ width: auto }
-  &[\:slides-per-page="1.5"]> *{ width: calc((100%/1.5) - (40px * 0.5) / 1.5) }
-  &[\:slides-per-page="1.75"]> *{ width: calc((100%/1.75) - (40px * 0.75) / 1.75) }
-  &[\:slides-per-page="2"]> *{ width: calc((100%/2) - (40px * 1) / 2 ) }
-  &[\:slides-per-page="2.75"]> *{ width: calc((100%/2.75) - (40px * 1.75) / 2.75 ) }
-  &[\:slides-per-page="3"]> *{ width: calc((100%/3) - (40px * 2) / 3) }
-  &[\:slides-per-page="4"]> *{ width: calc((100%/4) - (40px * 3) / 4) }
-  &[\:slides-per-page="5"]> *{ width: calc((100%/5) - (40px * 4) / 3) }
+  &[\:slides-per-page="1.5"]> *{ width: calc((100%/1.5) - (20px * 0.5) / 1.5) }
+  &[\:slides-per-page="1.75"]> *{ width: calc((100%/1.75) - (20px * 0.75) / 1.75) }
+  &[\:slides-per-page="2"]> *{ width: calc((100%/2) - (20px * 1) / 2 ) }
+  &[\:slides-per-page="2"][\:gutter="0"] > *{ width: calc(100%/2) }
+  &[\:slides-per-page="2.75"]> *{ width: calc((100%/2.75) - (20px * 1.75) / 2.75 ) }
+  &[\:slides-per-page="3"]> *{ width: calc((100%/3) - (20px * 2) / 3) }
+  &[\:slides-per-page="3"][\:gutter="0"] > *{ width: calc(100%/3) }
+  &[\:slides-per-page="4"]> *{ width: calc((100%/4) - (20px * 3) / 4) }
+  &[\:slides-per-page="4"][\:gutter="0"] > *{ width: calc(100%/4) }
+  &[\:slides-per-page="5"]> *{ width: calc((100%/5) - (20px * 4) / 3) }
+  &[\:slides-per-page="5"][\:gutter="0"] > *{ width: calc(100%/5) }
   &[\:overflow-visible="true"]{ overflow: visible }
-  &[\:responsive='[{ maxWidth: 1024, slidesPerPage: 2}, { maxWidth: 767, slidesPerPage: 1.2}]']> *,
-  &[\:responsive="[{ maxWidth: 1024, slidesPerPage: 2}, { maxWidth: 767, slidesPerPage: 1.2, gutter:20}]"]> *,
-  &[\:responsive='[{ maxWidth: 1023, slidesPerPage: 2.5}, { maxWidth: 767, slidesPerPage: 1.2}]']{
+  &[\:responsive='[{maxWidth: 480, gutter: 10, slidesPerPage:1.5}]']> *{
     @media #{$to-phone} {
-      width: calc((100%/1.2) - (20px * 0.2) / 1.5)
+      width: calc((100%/1.5) - (10px * 0.5) / 1.5); margin-right: 10px;
     }
   }
-  &[\:responsive='[{ maxWidth: 767, slidesPerPage: 1.1}]']> *{
+  &[\:responsive='[{maxWidth: 480, gutter: 0, slidesPerPage:1}]']> *{
     @media #{$to-phone} {
-      width: calc((100%/1.1) - (20px * 0.1) / 1.1)
+      width: 100%; margin-right: 0;
     }
   }
-  &[\:responsive='[{ maxWidth: 1024, slidesPerPage: 2}, { maxWidth: 767, slidesPerPage: 1}]']> *{
+  &[\:responsive='[{maxWidth: 480, gutter: 10, slidesPerPage:2.1}]']> *{
     @media #{$to-phone} {
-      width: 100%
+      width: calc((100%/2.1) - (10px * 1.1) / 2.1); margin-right: 10px;
     }
   }
 }

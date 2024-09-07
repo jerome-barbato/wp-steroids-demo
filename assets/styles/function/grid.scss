@@ -1,3 +1,5 @@
+@use "sass:math";
+
 @function col($count){
-  @return unquote(($count/$grip-columns)*100+'%')
+  @return unquote(math.div($count,$grip-columns)*100+'%')
 }

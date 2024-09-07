@@ -8,8 +8,9 @@ html{
 }
 
 body{
+  max-width: 1920px; margin-left: auto; margin-right: auto;
   &.burger-is-open{
-    @media #{$include-small} { overflow: hidden }
+    @media #{$to-tablet} { overflow: hidden }
   }
 }
 
@@ -18,7 +19,6 @@ body{
   .container{
     margin-left: auto; margin-right: auto; display: flex; flex-flow: column;
     position: relative; max-width: $container-w; width: calc( 100% - 80px);
-    @media #{$include-small} { width: calc( 100% - 60px) }
     @media #{$to-phone} { width: calc( 100% - 40px) }
     .container{ width: 100% }
     &--empty{
@@ -53,13 +53,15 @@ body{
   #next{ display: inline; height: 0 }
 
   #root{
-    min-height: #{$app-h}; display: flex; flex-flow: column;
+    min-height: calc($app-h - $admin-h); display: flex; flex-flow: column;
   }
 
   figure{
-    figcaption{
-      text-align: right; font-size: $font-xs; margin-top: $space-xs; font-style: italic; line-height: 1.1;
+    position: relative; display: block;
+    &.has-caption:after{
+      position: overlay(); background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 85%); content: '';
     }
+    figcaption{ position: absolute; left: 0; bottom: 0; width: 100%; padding: $space-s $space; color: $c-white; font-size: $font-s; z-index: 1 }
   }
 
   dialog{
@@ -92,11 +94,10 @@ body{
   }
 
   .image-placeholder{
-    position: relative;
+    background: $c-transparent; display: block; position: relative; aspect-ratio: 4/3;
     &:after{
       position: overlay(); content: ''; background: url("../../media/images/logo.svg") no-repeat center;
-      background-size: 60% auto; opacity: 0.1;
+      background-size: 50% auto; opacity: 0.2;
     }
-    background: $c-image-placeholder; display: block;
   }
 }

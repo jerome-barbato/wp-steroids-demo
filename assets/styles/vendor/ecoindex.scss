@@ -1,0 +1,98 @@
+
+.ecoindex__list {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0!important;
+  margin: 0;
+  list-style: none;
+  align-items: flex-end;
+  li{
+    padding-left: 0!important;
+    &:before{ display: none!important }
+  }
+}
+
+.ecoindex__note {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  align-items: flex-end;
+  justify-content: flex-end;
+  display: flex;
+  border-width: 0.125rem;
+  border-style: solid;
+  width: min(10vw,5rem);
+  height: min(10vw,5rem);
+  border-radius: 1.25rem;
+  font-size: 1.375rem;
+  padding: 0.625rem;
+  margin: 0.25rem;
+  color: #000;
+  font-weight: bold;
+  background-color: #fff;
+}
+
+/* A */
+.ecoindex__note:nth-of-type(1) {
+  border-color: #4f9f30;
+}
+
+.ecoindex__note--active {
+  color: #fff!important;
+}
+
+.ecoindex__note:nth-of-type(1).ecoindex__note--active {
+  background-color: #4f9f30;
+}
+
+/* B */
+.ecoindex__note:nth-of-type(2) {
+  border-color: #51b84b;
+}
+
+.ecoindex__note:nth-of-type(2).ecoindex__note--active {
+  background-color: #51b84b;
+}
+
+/* C */
+.ecoindex__note:nth-of-type(3) {
+  border-color: #cadb2a;
+}
+
+.ecoindex__note:nth-of-type(3).ecoindex__note--active {
+  background-color: #cadb2a;
+}
+
+/* D */
+.ecoindex__note:nth-of-type(4) {
+  border-color: #f6eb15;
+}
+
+.ecoindex__note:nth-of-type(4).ecoindex__note--active {
+  background-color: #f6eb15;
+}
+
+/* E */
+.ecoindex__note:nth-of-type(5) {
+  border-color: #fecd06;
+}
+
+.ecoindex__note:nth-of-type(5).ecoindex__note--active {
+  background-color: #fecd06;
+}
+
+/* F */
+.ecoindex__note:nth-of-type(6) {
+  border-color: #f99839;
+}
+
+.ecoindex__note:nth-of-type(6).ecoindex__note--active {
+  background-color: #f99839;
+}
+
+/* G */
+.ecoindex__note:nth-of-type(7) {
+  border-color: #ed2124;
+}
+
+.ecoindex__note:nth-of-type(7).ecoindex__note--active {
+  background-color: #ed2124;
+}
