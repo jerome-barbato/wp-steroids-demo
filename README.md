@@ -2,7 +2,11 @@
 
 Bedrock is a modern WordPress stack that helps you get started with the best development tools and project structure.
 
-This is a modified version using [Timber](https://fr.wordpress.org/plugins/timber-library/) and [WP Steroid](https://github.com/wearemetabolism/wp-steroids)
+This is a modified version using [Timber](https://fr.wordpress.org/plugins/timber-library/), [WP Steroid](https://github.com/wearemetabolism/wp-steroids). 
+
+This project is designed to bootstrap a custom-made website without using a theme, utilizing custom fields with [ACF](https://www.advancedcustomfields.com) or [Carbon Fields](https://carbonfields.net) instead.
+
+![](.demo/screenshot.png)
 
 ## Features
 
@@ -34,7 +38,6 @@ This is a modified version using [Timber](https://fr.wordpress.org/plugins/timbe
     - Optionally, you can define `DATABASE_URL` for using a DSN instead of using the variables above (e.g. `mysql://user:password@127.0.0.1:3306/db_name`)
 - `WP_ENV` - Set to environment (`development`, `staging`, `production`)
 - `WP_HOME` - Full URL to WordPress home (http://wordpress.io)
-- `ACF_PRO_KEY` - Your ACF Licence key
 - `AUTH_KEY`, `SECURE_AUTH_KEY`, `LOGGED_IN_KEY`, `NONCE_KEY`, `AUTH_SALT`, `SECURE_AUTH_SALT`, `LOGGED_IN_SALT`, `NONCE_SALT`
     - Generate with [WordPress salts generator](https://roots.io/salts.html)
 
@@ -54,17 +57,17 @@ This is a modified version using [Timber](https://fr.wordpress.org/plugins/timbe
 
 6. Go to the WP_HOME url and install WordPress
 
-7. Remove `demo.sql` file
+7. Remove `.demo` folder
 
-## Install using `demo.sql`
+## Install using demo file
 
 1. Do a `Fresh install`, from step 1 to 5
 
-2. Import `demo.sql` file in your database ( demo url in sql file is http://wordpress.io, admin login : demo/demo ) or install WordPress
+2. Import `.demo/database.sql` file in your database ( demo url in sql file is http://wordpress.io, admin login : demo/demo ) or install WordPress
 
-If you need to change the url, perform a search & replace in the demo.sql, and execute in bash `php bin/fix-serialisation demo.sql`
+If you need to change the url, perform a search & replace in the demo.sql, and execute in bash `php bin/fix-serialisation .demo/database.sql`
 
-3. Remove `demo.sql` file
+3. Remove `.demo` folder
 
 ## Development
 
@@ -76,6 +79,18 @@ If you need to change the url, perform a search & replace in the demo.sql, and e
    ```sh
    $ npm run dev-server
    ```
+
+## Using Carbon fields
+
+Edit composer.json, replace `"wpackagist-plugin/advanced-custom-fields": "^6.3.6"` with `"htmlburger/carbon-fields": "^3.6"`
+
+You can also add `"metabolism/carbon-fields-urlpicker": "^3.0"` to add an url picker field
+
+## Using ACF PRO
+
+ACF PRO can be installed using Composer, similar to how the free plugin can be installed using WordPress Packagist.
+
+Please read the [documentation](https://www.advancedcustomfields.com/resources/installing-acf-pro-with-composer/) on ACF Website
 
 ## Docker
 

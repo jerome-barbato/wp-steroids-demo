@@ -39,5 +39,6 @@ Timber::$dirname = array( '../../../../templates', 'views' );
 
 Timber::init();
 
+include ABSPATH.'../../src/Options.php';
 include ABSPATH.'../../src/Kernel.php';
 include ABSPATH.'../../src/Site.php';

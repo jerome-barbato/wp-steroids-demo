@@ -22,8 +22,7 @@ abstract class Kernel extends \Timber\Site {
     /** Add timber support. */
     public function __construct() {
 
-        if( function_exists('get_fields') )
-            $this->options = get_fields('option');
+        $this->options = new Options();
 
         add_filter('network_site_url', [$this, 'networkSiteURL'] );
         add_filter('option_siteurl', [$this, 'optionSiteURL'] );
@@ -154,6 +153,42 @@ abstract class Kernel extends \Timber\Site {
     }
 
     /**
+     * @return false|int|mixed|string|null
+     */
+    public static function get_post_id() {
+
+        if ( $post_id = get_the_ID() )
+            return $post_id;
+
+        $post_id = isset( $_GET['post'] ) && (int) $_GET['post'] > 0 ? (int) $_GET['post'] : null;
+
+        if ( ! empty( $post_id ) )
+            return $post_id;
+
+        $admin_url = isset( $_SERVER['HTTP_REFERER'] ) && ! empty( $_SERVER['HTTP_REFERER'] ) ? $_SERVER['HTTP_REFERER'] : null;
+
+        if ( ! empty( $admin_url ) ) {
+
+            $parsed_url = parse_url( $admin_url );
+
+            if ( isset( $parsed_url['query']) && ! empty( $parsed_url['query'] ) ) {
+
+                $params = explode( '&', $parsed_url['query'] );
+
+                foreach ( $params as $param ) {
+
+                    $param = explode( '=', $param );
+
+                    if ( $param[0] === 'post' )
+                        $post_id = $param[1];
+                }
+            }
+        }
+
+        return $post_id;
+    }
+
+    /**
      * @param $block
      * @param $content
      * @param $is_preview
@@ -164,7 +199,7 @@ abstract class Kernel extends \Timber\Site {
         if( !($block['front']??true) && !is_admin() )
             return;
 
-        if( $image = $block['data']['_preview_image']??false ){
+        if( $is_preview && $image = $block['data']['_preview_image']??false ){
 
             echo '<img src="'.get_home_url().$image.'" style="width:100%;height:auto" class="preview_image"/>';
             return;
@@ -172,10 +207,10 @@ abstract class Kernel extends \Timber\Site {
 
         $context = Timber::context();
 
-        if( $id = get_the_ID() )
+        if( $id = self::get_post_id() )
             $context['post'] = Timber::get_post($id);
 
-        $context['props'] = get_fields();
+        $context['props'] = $block['fields']??get_fields();
 
         // Store field values.
         $context['block'] = $block;
@@ -192,7 +227,7 @@ abstract class Kernel extends \Timber\Site {
 
     private function get_translations()
     {
-        if( $translations = $this->options['translations']??false )
+        if( $translations = $this->options->get('translations') )
         {
             $this->translations = [];
             foreach ($translations as $translation)

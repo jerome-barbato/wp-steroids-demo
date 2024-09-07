@@ -128,7 +128,7 @@ wordpress:
             translation:
               type: text
 
-  ## Use Wordpress as a headless cms
+  ## Use WordPress as a headless cms
   #headless:
   #  mapping: true
 
