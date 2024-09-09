@@ -82,9 +82,8 @@
   "extra": {
     "installer-paths": {
       "public/app/mu-plugins/{$name}/": ["type:wordpress-muplugin"],
-      "public/app/plugins/{$name}/": ["type:wordpress-plugin"],
-      "public/app/themes/{$name}/": ["type:wordpress-theme"],
-      "public/app/plugins/{$name}": ["htmlburger/carbon-fields"]
+      "public/app/plugins/{$name}/": ["type:wordpress-plugin","htmlburger/carbon-fields"],
+      "public/app/themes/{$name}/": ["type:wordpress-theme"]
     },
     "wordpress-install-dir": "public/edition"
   },
