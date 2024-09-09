@@ -1,7 +1,7 @@
 {
     "dependencies": {
         "dayjs": "^1.11.13",
-        "lodash": "4.17.21",
+        "just-camel-case": "^6.2.0",
         "object-hash": "^3.0.0",
         "vue": "2.7.13",
         "vue-observe-visibility": "^1.0.0",
