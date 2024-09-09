@@ -94,7 +94,13 @@ Documentation is available on [Gitbook](https://metabolism.gitbook.io/symfony-wo
 
 6. Go to the `WP_HOME` url and install WordPress
 
-7. Remove `.demo` folder
+7. Login as admin, activate `Timber` theme 
+
+8. Activate also `WordPress on Steroids` and `Advanced Custom Fields` plugins
+
+9. Add a new page and start playing with blocks !
+
+10. Remove `.demo` folder and update Readme.md
 
 ## Install using demo file
 
@@ -104,7 +110,7 @@ Documentation is available on [Gitbook](https://metabolism.gitbook.io/symfony-wo
 
 If you need to change the url, perform a search & replace in the demo.sql, and execute in bash `php bin/fix-serialisation .demo/database.sql`
 
-3. Remove `.demo` folder
+3. Remove `.demo` folder and update Readme.md
 
 ## Development
 
