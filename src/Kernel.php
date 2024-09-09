@@ -404,6 +404,21 @@ abstract class Kernel extends \Timber\Site {
         elseif( is_int($image) )
             $post_id = $image;
 
+        if( isset($sources['lazy']) ){
+
+            if( !$sources['lazy'] )
+                $loading = 'eager';
+
+            unset( $sources['lazy'] );
+        }
+
+        if( isset($sources['alt']) ){
+
+            $alt = $sources['alt'];
+            
+            unset( $sources['alt'] );
+        }
+
         if( $post_id ){
 
             $src = wp_get_original_image_path($post_id);
@@ -427,6 +442,9 @@ abstract class Kernel extends \Timber\Site {
 
         if( !$image )
             return '';
+
+        if( $alt )
+            $image['alt'] = htmlspecialchars($alt, ENT_QUOTES, 'UTF-8');
 
         $ext = function_exists('imagewebp') ? 'webp' : null;
         $mime = function_exists('imagewebp') ? 'image/webp' : $image['mime_type'];
@@ -503,7 +521,7 @@ abstract class Kernel extends \Timber\Site {
 
             $image_info = getimagesize($upload_dir['basedir'].$au['subdir'].'/'.$au['basename']);
 
-            $html .= '<img loading="' . $loading . '" src="' . $url . '" alt="' . ($alt ?: $image['alt']) . '" '.($image_info[0]?'width="'.$image_info[0].'"':'').' '.($image_info[1]?'height="'.$image_info[1].'"':'').'/>';
+            $html .= '<img loading="' . $loading . '" src="' . $url . '" alt="' . $image['alt'] . '" '.($image_info[0]?'width="'.$image_info[0].'"':'').' '.($image_info[1]?'height="'.$image_info[1].'"':'').'/>';
         }
 
         $html .='</picture>';
