@@ -53,6 +53,8 @@ This project is designed to bootstrap a custom-made website without using a them
 - External table viewer
 - Advanced roles
 
+Documentation is available on [Gitbook](https://metabolism.gitbook.io/symfony-wordpress-bundle/guides/wp-steroids-plugin)
+
 ## Server requirements
 
 - PHP >= 8.1 with GD ( jpeg, webp ), pdo_mysql, mysqli
