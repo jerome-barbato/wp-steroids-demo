@@ -1,5 +1,5 @@
-FROM node:16 AS node
-FROM composer:2.5 AS composer
+FROM node:18 AS node
+FROM composer:2.7 AS composer
 FROM php:8.2-fpm
 
 # Set the working directory
@@ -21,9 +21,6 @@ COPY --from=composer /usr/bin/composer /usr/bin/composer
 
 # Allow Composer to run as superuser
 ENV COMPOSER_ALLOW_SUPERUSER=1
-
-# Set the ACF_PRO_KEY build argument
-ARG ACF_PRO_KEY
 
 # Copy installation files
 COPY composer.* ./

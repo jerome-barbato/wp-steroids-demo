@@ -17,20 +17,24 @@ This project is designed to bootstrap a custom-made website without using a them
 - Dependency management with [Composer](https://getcomposer.org)
 - Easy WordPress configuration with environment specific files
 - Environment variables with [Dotenv](https://github.com/vlucas/phpdotenv)
-- Autoloader for mu-plugins (use regular plugins as mu-plugins)
 - Enhanced security (separated web root and secure passwords with [wp-password-bcrypt](https://github.com/roots/wp-password-bcrypt))
 
 ## Server requirements
 
 - PHP >= 8.1 with GD ( jpeg, webp ), pdo_mysql, mysqli
 - Curl, Git, Zip, Composer 2
-- Node 16
+- Node 18
 - Mysql >= 5.7 or Maria DB >= 10.4
 - Nginx or Apache with mod_rewrite module
 
 ## Fresh install
 
-1. Update environment variables in the `.env` file. Wrap values that may contain non-alphanumeric characters with quotes, or they may be incorrectly parsed.
+1. Install vendor
+   ```sh
+   $ composer install
+   ```
+
+2. Update environment variables in the `.env` file. Wrap values that may contain non-alphanumeric characters with quotes, or they may be incorrectly parsed.
 
 - Database variables
     - `DB_NAME` - Database name
@@ -43,21 +47,16 @@ This project is designed to bootstrap a custom-made website without using a them
 - `AUTH_KEY`, `SECURE_AUTH_KEY`, `LOGGED_IN_KEY`, `NONCE_KEY`, `AUTH_SALT`, `SECURE_AUTH_SALT`, `LOGGED_IN_SALT`, `NONCE_SALT`
     - Generate with [WordPress salts generator](https://roots.io/salts.html)
 
-2. Install vendor
-   ```sh
-   $ composer install
-   ```
-
 3. Build sources
    ```sh
    $ npm install && npm run build
    ```
 
-4. Set the document root on your webserver to Bedrock's `public` folder: `/path/to/site/public/`
+4. Set the document root on your webserver to `public` folder: `/path/to/site/public/`
 
 5. Allow 'write' permissions to `/path/to/site/var/` and `/path/to/site/public/app/uploads`
 
-6. Go to the WP_HOME url and install WordPress
+6. Go to the `WP_HOME` url and install WordPress
 
 7. Remove `.demo` folder
 
@@ -103,7 +102,7 @@ Feel free to update WP_HOME and WP_SITEURL in `docker-compose.yml` and server_na
 Run the project using 
 
 ```sh
- docker-compose build --build-arg ACF_PRO_KEY=your_licence_key
+ docker-compose build
  docker-compose up -d
 ```
 
