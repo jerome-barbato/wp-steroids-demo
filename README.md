@@ -14,10 +14,44 @@ This project is designed to bootstrap a custom-made website without using a them
 
 - Better folder structure
 - YML configuration
+- Permalink configuration for custom post types and taxonomies
+- Maintenance mode
+- Backup download in dev mode
+- Build hook
+- Disabled automatic updates
+- Enhanced security
+- Better GUID using RFC 4122 compliant UUID version 5
+- Multisite images sync (for multisite as multilingual)
+- SVG support
+- Better performance
+- Radio type for taxonomies
+- Multisite post deep copy (with multisite-language-switcher plugin)
+- Custom datatable support with view and delete actions in admin
+- Google Translate or DeepL integration
+- Optimizations
 - Dependency management with [Composer](https://getcomposer.org)
 - Easy WordPress configuration with environment specific files
 - Environment variables with [Dotenv](https://github.com/vlucas/phpdotenv)
 - Enhanced security (separated web root and secure passwords with [wp-password-bcrypt](https://github.com/roots/wp-password-bcrypt))
+
+### The YML file allows you to configure:
+
+- Image options
+- Maintenance support
+- Admin pages removal
+- WYSIWYG MCE editor
+- Feature support
+- Multisite configuration
+- ACF configuration
+- Menu
+- Custom post types
+- Custom taxonomies
+- Blocks
+- Page, post, and taxonomy templates
+- Page state
+- Post format
+- External table viewer
+- Advanced roles
 
 ## Server requirements
 
