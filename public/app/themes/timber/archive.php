@@ -31,6 +31,16 @@ if ( is_category() ) {
 }
 if ( is_tax() ) {
 
+    $context['current_taxonomy'] = get_queried_object();
+
+    if( get_query_var( 'post_type' ) ){
+
+        array_unshift( $templates, 'archive-' . get_query_var( 'post_type' ) . '.twig' );
+
+        if( $context['paged'] > 1 )
+            array_unshift( $templates, 'archive-' . get_query_var( 'post_type' ) . '-paged.twig' );
+    }
+
 	array_unshift( $templates, 'archive-' . get_query_var( 'taxonomy' ) . '.twig' );
 
     if( $context['paged'] > 1 )

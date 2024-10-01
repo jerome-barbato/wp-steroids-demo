@@ -40,6 +40,8 @@ abstract class Kernel extends \Timber\Site {
 
         add_action( 'init', [$this, 'maintenance']);
         add_action( 'init', [$this, 'redirect']);
+        add_action( 'init', [$this, 'get_translations']);
+
         add_filter( 'timber/context', [$this, 'addToContext'] );
         add_filter( 'timber/twig', [$this, 'addToTwig'] );
         add_filter( 'block_render_callback', [$this, 'renderBlock']);
@@ -52,8 +54,6 @@ abstract class Kernel extends \Timber\Site {
 
         if( is_admin() )
             add_action('enqueue_block_editor_assets', [$this, 'enqueueBlockEditorAssets']);
-
-        $this->get_translations();
 
         parent::__construct();
     }
@@ -217,6 +217,7 @@ abstract class Kernel extends \Timber\Site {
 
         // Store $is_preview value.
         $context['is_preview'] = $is_preview;
+        $context['is_admin'] = is_admin();
         $context['is_front_page'] = is_front_page();
 
         // Render the block.
@@ -298,6 +299,19 @@ abstract class Kernel extends \Timber\Site {
             $url .= (strpos($url, '?' ) !== false ? '&v=' : '?v=' ).$version;
 
         return $url;
+    }
+
+    /**
+     * @param $object
+     * @param $property
+     * @param $value
+     */
+    public function assign($object, $property, $value) {
+
+       if( is_object($object) )
+           $object->$property = $value;
+
+       return $object;
     }
 
     /**
@@ -443,13 +457,12 @@ abstract class Kernel extends \Timber\Site {
         if( !$image )
             return '';
 
-        if( $alt )
-            $image['alt'] = htmlspecialchars($alt, ENT_QUOTES, 'UTF-8');
+        $image['alt'] = htmlspecialchars($alt?:$image['alt'], ENT_QUOTES, 'UTF-8');
 
         $ext = function_exists('imagewebp') ? 'webp' : null;
         $mime = function_exists('imagewebp') ? 'image/webp' : $image['mime_type'];
 
-        $html = '<picture>';
+        $html = '<picture class="responsive-picture">';
 
         if($image['mime_type'] == 'image/svg+xml' || $image['mime_type'] == 'image/svg' || $image['mime_type'] == 'image/gif' ){
 
@@ -473,7 +486,7 @@ abstract class Kernel extends \Timber\Site {
                         $webp_src = ImageHelper::img_to_webp($image['url']);
                         $url = $this->resizeImage($webp_src, $size[0] ?? 0, $size[1] ?? 0, $crop);
 
-                        if( ($target_width > 0 && $target_width < 960) || ($target_height > 0 && $target_height < 960) ) {
+                        if( ($target_width > 0 && $target_width < 960 && $target_height < 960) || ($target_height > 0 && $target_height < 960 && $target_width < 960) ) {
 
                             $url_2x = $this->resizeImage($webp_src, $target_width * 2, $target_height * 2, $crop);
                             $html .= '<source media="(' . $media . ')" srcset="' . $url . ' 1x, ' . $url_2x . ' 2x" type="' . $mime . '"/>';
@@ -486,7 +499,7 @@ abstract class Kernel extends \Timber\Site {
 
                     $url = $this->resizeImage($image['url'], $size[0] ?? 0, $size[1] ?? 0, $crop);
 
-                    if( ($target_width > 0 && $target_width < 960) || ($target_height > 0 && $target_height < 960) ){
+                    if( ($target_width > 0 && $target_width < 960 && $target_height < 960) || ($target_height > 0 && $target_height < 960 && $target_width < 960) ){
 
                         $url_2x = $this->resizeImage($image['url'], $target_width*2, $target_height*2, $crop);
                         $html .= '<source media="(' . $media . ')" srcset="' . $url . ' 1x, '.$url_2x.' 2x" type="' . $image['mime_type'] . '"/>';
@@ -503,7 +516,7 @@ abstract class Kernel extends \Timber\Site {
                 $webp_src = ImageHelper::img_to_webp($image['url']);
                 $url = $this->resizeImage($webp_src, $width, $height, $crop);
 
-                if( ( $width> 0 && $width < 960 ) || ( $height > 0 && $height < 960 ) ){
+                if( ( $width> 0 && $width < 960 && $height < 960 ) || ( $height > 0 && $height < 960 && $width < 960 ) ){
 
                     $url_2x = $this->resizeImage($webp_src, $width*2, $height*2, $crop);
                     $html .= '<source srcset="' . $url . ' 1x, '.$url_2x.' 2x" type="image/webp"/>';
@@ -666,6 +679,19 @@ abstract class Kernel extends \Timber\Site {
         $text = explode("\n", $text);
         $html = '<p>'.implode('</p><p>', array_filter($text)).'</p>';
         $html = str_replace("<p>\r</p>", '', $html);
+
+        return new \Twig\Markup($html, 'UTF-8');
+    }
+
+    /**
+     * @param $text
+     * @return \Twig\Markup
+     */
+    public function lineBreakToSpan($text)
+    {
+        $text = explode("\n", $text);
+        $html = '<span>'.implode('</span><span>', array_filter($text)).'</span>';
+        $html = str_replace("<span>\r</span>", '', $html);
 
         return new \Twig\Markup($html, 'UTF-8');
     }
@@ -881,6 +907,24 @@ abstract class Kernel extends \Timber\Site {
         return false;
     }
 
+    /**
+     * @param $post
+     * @param bool $field
+     * @return mixed
+     */
+    public function getFirstBlock($post, $field=false){
+
+        if( !$post || !$post->post_content || !has_blocks($post) )
+            return false;
+
+        $blocks = parse_blocks($post->post_content);
+
+        if( !$field )
+            return $blocks[0]['attrs']??false;
+
+        return $blocks[0]['attrs']['data'][$field]??null;
+    }
+
     public function enqueue_contact_form_scripts(){
 
         if ( function_exists( 'wpcf7_enqueue_scripts' ) )
@@ -989,9 +1033,11 @@ abstract class Kernel extends \Timber\Site {
         $twig->addFunction( new Twig\TwigFunction( 'is_singular',  'is_singular' ) );
         $twig->addFunction( new Twig\TwigFunction( 'get_page_by_state',  [$this, 'getPageByState'] ) );
 
+        $twig->addFilter( new Twig\TwigFilter( 'assign', [$this, 'assign'] ) );
         $twig->addFilter( new Twig\TwigFilter( 'intval', 'intval' ) );
         $twig->addFilter( new Twig\TwigFilter( 'placeholder', [$this, 'placeholder'] ) );
         $twig->addFilter( new Twig\TwigFilter( 'has_block', [$this, 'hasBlock'] ) );
+        $twig->addFilter( new Twig\TwigFilter( 'first_block', [$this, 'getFirstBlock'] ) );
         $twig->addFilter( new Twig\TwigFilter( 'lottie_placeholder', [$this, 'generateLottiePlaceholder'] ) );
         $twig->addFilter( new Twig\TwigFilter( 'handle', 'sanitize_title' ) );
         $twig->addFilter( new Twig\TwigFilter( 'table', [$this, 'generateTable'] ) );
@@ -1004,6 +1050,7 @@ abstract class Kernel extends \Timber\Site {
         $twig->addFilter( new Twig\TwigFilter( 'encode', [$this,'encode'] ) );
         $twig->addFilter( new Twig\TwigFilter( 'bind', [$this,'bind'] ) );
         $twig->addFilter( new Twig\TwigFilter( 'nl2p', [$this,'lineBreakToP'] ) );
+        $twig->addFilter( new Twig\TwigFilter( 'nl2span', [$this,'lineBreakToSpan'] ) );
         $twig->addFilter( new Twig\TwigFilter( 'space2span', [$this,'spaceToSpan'] ) );
         $twig->addFilter( new Twig\TwigFilter( 'parse_url', [$this,'parseUrl'] ) );
         $twig->addFilter( new Twig\TwigFilter( 'phone', [$this,'formatPhone'] ) );

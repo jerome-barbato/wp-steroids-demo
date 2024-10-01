@@ -1,4 +1,4 @@
-#root, .acf-block-preview{
+.is-front, .acf-block-preview{
   color: $c-text;
   &, input, textarea, select, button{ font-family: $font-text; @extend %text-medium }
 }
@@ -63,9 +63,7 @@ html{
   a, email{ text-decoration: underline; cursor: pointer }
   h3{ @extend %text-hero }
   h4{ @extend %text-medium }
-  p, table, li{
-    @extend %text-medium; line-height: 1.5;
-  }
+  p, table, li{ font-size: inherit }
   .a-cta{
     display: inline-block;
     span{

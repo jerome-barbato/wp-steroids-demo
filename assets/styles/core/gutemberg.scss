@@ -1,27 +1,34 @@
-.edit-post-visual-editor__post-title-wrapper{ width: calc(100% - 40px); max-width: 1440px; margin: auto; margin-top: 0!important }
-.edit-post-visual-editor__post-title-wrapper h1{ font-size: revert; margin: revert; line-height: 1.2 }
+.edit-post-visual-editor__post-title-wrapper{
+  width: calc(100% - 40px); max-width: 1440px; margin: auto; margin-top: 0!important;
+  h1{ font-size: revert; margin: revert; line-height: 1.2 }
+}
 
 .wp-block{
   .editor-styles-wrapper &{ max-width: none }
+  &:first-of-type section{ margin-top: 0!important; }
+  &:last-of-type section{ margin-bottom: 0!important; }
 }
 
-.block-editor-block-list__layout{
-  max-width: 1440px; margin: auto; overflow: hidden;
+.block-editor{
+  &-list__layout{
+    max-width: 1440px; margin: auto; overflow: hidden;
+  }
+  &-iframe__body{ background: #eee; overflow-x: hidden }
 }
 
 .acf-block-preview{
   --admin-h: 0px;
   --header-h: 0px;
-  --space-section: 6rem;
   position: relative; z-index: 1;
-  p{ font-size: inherit }
-  .wp-block:first-of-type &{ margin-top: 0 }
-  .wp-block:last-of-type &{ margin-bottom: 0 }
+  section{ margin-top: $space-l!important }
+  on-scroll, [v-on-scroll]{ visibility: visible }
 }
 
 .is-desktop-preview {
-  &.is-root-container, .is-root-container{ width: calc(100% - 40px); max-width:1440px; background: #fff; box-shadow: 0 0 6px rgb(0 0 0 / 5%); min-height: calc(100vh - 170px) }
-  .editor-styles-wrapper{ background: #eee; padding: 20px!important }
+  &.is-root-container, .is-root-container{
+    margin: auto; width: calc(100% - 40px); max-width:1440px; background: $c-background;
+    box-shadow: 0 0 6px rgb(0 0 0 / 5%); min-height: calc(100vh - 170px)
+  }
 }
 
 .is-mobile-preview{ border: 0!important; border-radius: 8px!important; }

@@ -36,7 +36,7 @@ $aos-animations-list:
 		> *{
 			animation-fill-mode: both; animation-duration: $aos-duration; animation-timing-function: $aos-easing; backface-visibility: hidden;
 			animation-name: slide-up; will-change: opacity, transform;
-			@for $i from 1 through 10{
+			@for $i from 1 through 20{
 
 				&:nth-child(#{$i}){ animation-delay: $i*$aos-delay}
 			}

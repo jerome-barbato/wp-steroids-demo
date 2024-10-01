@@ -1,0 +1,23 @@
+.p-video{
+  position: relative; cursor: pointer; background: $c-black;  display: block;
+  &__inner{
+    display: block; @include icon('play');
+    &:after{
+      content: ""; position: absolute; left: 50%; top: 50%; width: 10rem; height: 10rem;
+      border-radius: 50%; background: $c-theme; transform: translate(-50%, -50%);
+      @media #{$to-phone} { width: 8rem; height: 8rem }
+    }
+    &:before{
+      z-index: 1; position: absolute; left: 50%; top: 50%; color: $c-white;
+      transform: translate(-50%, -50%); font-size: $font-l; margin-left: 2px;
+    }
+  }
+  .youtube{
+    position: overlay(); z-index: 1;
+    iframe{ width: 100%; height: 100% }
+  }
+  img{
+	  width: 100%; height: auto; opacity: 0.9; object-fit: cover!important; aspect-ratio: 16/9; max-width: none;
+	  max-height: 80vh;
+  }
+}

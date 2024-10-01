@@ -3,6 +3,8 @@
 .ssr-carousel, %ssr-carousel{
   width: 100%; position: relative;
   &-mask.disabled .ssr-carousel-track{ justify-content: left }
+  &-mask.disabled+&-arrows{ pointer-events: none }
+  &-mask.disabled+&-arrows button:after{ border-bottom: 0 }
   &-mask.disabled &-slide[aria-hidden='true']{ display: revert }
   &-track{ justify-content: left }
   &-slide[href="#"]{ cursor: inherit }

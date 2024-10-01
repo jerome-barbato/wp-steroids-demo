@@ -12,6 +12,7 @@ $animation-offset     : 100%;
 $animation-offset-rem : 4rem;
 
 //theme
+$color-background : #FFF;
 $color-theme : #001733;
 $color-theme-alt : #F2F0F0;
 
@@ -19,6 +20,7 @@ $color-theme-alt : #F2F0F0;
 $c-text: var(--c-text);
 $c-theme: var(--c-theme);
 $c-theme-alt: var(--c-theme-alt);
+$c-background: var(--c-background);
 $c-black: var(--c-black);
 $c-white: var(--c-white);
 $c-border: var(--c-border);
@@ -27,13 +29,14 @@ $c-placeholder-color: var(--c-placeholder-color);
 $c-transparent: var(--c-transparent);
 $c-image-placeholder: rgba(0,0,0,0.05);
 
-:root, *:before, *:after{
+:root{
+  --c-background: #{$color-background};
   --c-text: #111;
   --c-theme: #{$color-theme};
   --c-theme-alt: #{$color-theme-alt};
   --c-black: #111;
   --c-white: #fff;
-  --header-h: 131px;
+  --header-h: 9rem;
   --app-height: 100vh;
   --app-init-height: 100vh;
   --admin-h: 0px;
@@ -43,13 +46,16 @@ $c-image-placeholder: rgba(0,0,0,0.05);
   --c-transparent: rgba(255,255,255,0.3) ;
   --c-placeholder-color: #93B1D9;
   --space-section: 12rem;
+  --padding-section: 4rem;
+  --grid-gap: 8rem;
+  --grid-container-w: 75%;
   --font-title: 'inter', arial, serif;
   --font-text: 'inter', arial, sans-serif;
 }
 
 // Sizes
 $container-max-w : 1920px;
-$container-w : 1278px;
+$container-w : 1440px;
 $app-h : var(--app-height);
 $app-init-h : var(--app-init-height);
 $header-h : var(--header-h);
@@ -57,16 +63,17 @@ $admin-h : var(--admin-h);
 $footer-h : var(--footer-h);
 $border-radius: 1px;
 
-$space: 20px;
+$space: 2rem;
 $space-xxs: 5px;
 $space-xs: 8px;
 $space-s: 10px;
-$space-m: 30px;
+$space-m: 3rem;
 $space-l: 4rem;
 $space-xl: 6rem;
 $space-xxl: 8rem;
 $space-xxxl: 10rem;
 $space-section: var(--space-section);
+$padding-section: var(--padding-section);
 
 
 // Selector
@@ -127,6 +134,7 @@ world2 '\e825';
 // Grid
 
 $grid-container-max: 1920px;
+$grid-container-w: var(--grid-container-w);
 $grid-size: 122rem;
 $grip-columns: 12;
-$grip-gap: 4rem;
+$grip-gap: var(--grid-gap);

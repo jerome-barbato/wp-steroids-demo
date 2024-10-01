@@ -24,7 +24,7 @@ class Options
         if( function_exists('get_field') ){
 
             //get options using acf
-            return get_field('option', $name);
+            return get_field($name, 'option');
         }
         elseif( function_exists('carbon_get_theme_option') ){
 

@@ -59,6 +59,11 @@ let aosPrefixAnimation = (function(){
 function AOSInterface($el, props){
 
     let data = {
+        clientY: 0,
+        clientX: 0,
+        onShow: false,
+        onHide: false,
+        setAttribute: false,
         disabled: false,
         init: false,
         bounding: {},
@@ -66,6 +71,7 @@ function AOSInterface($el, props){
         timeout: false,
         current: false,
         shown: false,
+        locked: false,
         strengthPercent : String(props.strength).indexOf('%') !==-1,
         offsetPercent : String(props.offset).indexOf('%') !==-1
     };
@@ -83,7 +89,18 @@ function AOSInterface($el, props){
                 (props.small !== "disabled" && window.innerWidth <= 1024 && window.innerWidth > 768) ||
                 (window.innerWidth > 1024)
             ) {
-                $el.classList.add('on-scroll--wait');
+                if( props.animation && props.animation !== 'increment' )
+                    $el.classList.add('on-scroll--wait');
+
+                if( props.animation === 'increment' ){
+
+                    $el.setAttribute('data-increment', $el.textContent.replace(/ /g, '').replace(',', '.'))
+                    $el.textContent = 0
+                }
+
+                if( props.setAttribute )
+                    $el.setAttribute('data-'+props.attribute, $el.getAttribute(props.attribute))
+
                 methods.listen();
                 data.init = true;
             }
@@ -105,7 +122,34 @@ function AOSInterface($el, props){
 
             methods.scroll();
         },
+        updateClient: function(event){
+
+            data.clientX = event.clientX;
+            data.clientY = event.clientY;
+
+            if( props.animation === 'follow'){
+
+                const targetPosition = {
+                    left:
+                        $el.getBoundingClientRect().left +
+                        $el.getBoundingClientRect().width / 2,
+                    top:
+                        $el.getBoundingClientRect().top +
+                        $el.getBoundingClientRect().height / 2
+                };
+
+                const distance = {
+                    x: event.clientX-targetPosition.left,
+                    y: event.clientY-targetPosition.top
+                };
+
+                $el.animate({
+                    transform: `translate(${distance.x/20}px, ${distance.y/20}px`
+                }, {duration: 1000, fill: "forwards"})
+            }
+        },
         listen: function(){
+            document.addEventListener('mousemove', methods.updateClient);
             document.addEventListener('resize', methods.update);
             document.addEventListener('scroll', methods.update, supportsPassive?{passive:true}:false );
             methods.update();
@@ -126,14 +170,65 @@ function AOSInterface($el, props){
             $el.classList.remove('on-scroll--'+props.animation);
             $el.classList.remove('on-scroll');
         },
+        startCounter: function(el) {
+
+            data.locked = true;
+
+            const duration = (data.duration||1)*1000;
+
+            const start = 0 // Get start and end values
+            const end = parseFloat(el.getAttribute('data-increment'));
+            const isInt = end % 1 === 0;
+
+            if (start === end) return; // If equal values, stop here.
+
+            const range = end - start; // Get the range
+            let curr = start; // Set current at start position
+
+            const timeStart = Date.now();
+
+            const ease = {
+                linear: t => t,
+                inOutQuad: t => t<.5 ? 2*t*t : -1+(4-2*t)*t,
+            };
+
+            const countDecimals = Math.floor(end) === end ? 0 :(end.toString().split(".")[1].length || 0);
+            const formater = new Intl.NumberFormat(document.documentElement.lang)
+
+            const loop = () => {
+                let elaps = Date.now() - timeStart;
+                if (elaps > duration) elaps = duration; // Stop the loop
+                const norm = ease.inOutQuad(elaps / duration); // normalised value + easing
+                const step = norm * range; // Calculate the value step
+                curr = start + step; // Increment or Decrement current value
+                const increment = isInt?Math.trunc(curr):curr.toFixed(countDecimals);
+                el.textContent = formater.format(increment)
+                if (elaps < duration) requestAnimationFrame(loop);
+                else data.locked = false
+            };
+
+            requestAnimationFrame(loop); // Start the loop!
+        },
+        increment: function(pos){
+
+            if (pos > data.bounding.top && !data.locked && document.documentElement.lang.length)
+                methods.startCounter($el)
+        },
+        follow: function(pos){
+
+            if (pos > data.bounding.top && data.bounding.bottom > window.scrollY)
+                data.locked = false
+            else
+                data.locked = true
+        },
         parallax: function(pos){
 
             let offset = 0;
 
-            if (pos > data.bounding.top && data.bounding.bottom > window.pageYOffset) {
+            if (pos > data.bounding.top && data.bounding.bottom > window.scrollY) {
 
                 if (data.bounding.top < window.innerHeight) {
-                    offset = window.pageYOffset / data.bounding.bottom;
+                    offset = window.scrollY / data.bounding.bottom;
                 } else {
                     offset = (pos - data.bounding.top) / (data.bounding.bottom + window.innerHeight - data.bounding.top);
                 }
@@ -169,20 +264,28 @@ function AOSInterface($el, props){
             }
         },
         scroll: function(){
-            
+
             let pos = 0;
 
             if( props.animation === 'parallax')
-                pos = window.pageYOffset + window.innerHeight;
+                pos = window.scrollY + window.innerHeight;
             else if( data.offsetPercent )
-                pos = window.pageYOffset + window.innerHeight*data.offset/100;
+                pos = window.scrollY + window.innerHeight*data.offset/100;
             else
-                pos = window.pageYOffset + window.innerHeight - data.offset;
+                pos = window.scrollY + window.innerHeight - data.offset;
 
             if ( (data.bounding.top <= pos && !data.shown) || props.animation === 'parallax') {
 
                 if( props.animation === 'parallax') {
                     methods.parallax(pos);
+                }
+                else if( props.animation === 'increment') {
+
+                    methods.increment(pos);
+                }
+                else if( props.animation === 'follow') {
+
+                    methods.follow();
                 }
                 else {
 
@@ -192,22 +295,52 @@ function AOSInterface($el, props){
                     if (data.duration)
                         $el.style[aosPrefixAnimation.fn + 'Duration'] = data.duration + (data.duration < 10 ? 's' : 'ms');
 
-                    $el.addEventListener(aosPrefixAnimation.end, methods.end, false);
+                    if( props.animation === 'stack' )
+                        $el.childNodes[$el.childNodes.length-1].addEventListener(aosPrefixAnimation.end, methods.end, false);
+                    else
+                        $el.addEventListener(aosPrefixAnimation.end, methods.end, false);
                 }
 
+                if( props.setAttribute && !data.shown )
+                    $el.setAttribute(props.setAttribute, props.value)
+
+                if( props.onShow && !data.shown )
+                    props.onShow()
+
                 if( !data.shown ){
-                    $el.classList.remove('on-scroll--wait');
-                    $el.classList.add('on-scroll--'+props.animation);
+
+                    if( props.animation !== 'increment' && props.animation.length ){
+
+                        $el.classList.remove('on-scroll--wait');
+                        $el.classList.add('on-scroll--'+props.animation);
+                    }
 
                     data.shown = true;
                 }
             }
 
-            if( data.bounding.top > window.pageYOffset + window.innerHeight && data.shown && props.animation !== 'parallax'){
-                $el.classList.add('on-scroll--wait');
-                $el.classList.remove('on-scroll--'+props.animation);
+            if( data.bounding.top > window.scrollY + window.innerHeight && data.shown && props.animation !== 'parallax'){
+
+                if( props.animation !== 'increment' ){
+
+                    if( props.animation.length ){
+
+                        $el.classList.add('on-scroll--wait');
+                        $el.classList.remove('on-scroll--'+props.animation);
+                    }
+                }
+                else{
+
+                    $el.textContent = 0
+                }
 
                 data.shown = false;
+
+                if( props.setAttribute)
+                    $el.setAttribute(props.setAttribute, $el.getAttribute('data-'+props.setAttribute))
+
+                if( props.onHide )
+                    props.onHide()
             }
         }
     };
@@ -267,7 +400,7 @@ let AOSDirective = {
         let props = {
             animation: 'slide-up' ,
             delay: 0,
-            offset: 100,
+            offset: 50,
             strength: 100,
             duration: 0.5,
             invert: false,
@@ -278,7 +411,10 @@ let AOSDirective = {
             phone: 'active'
         };
 
-        props = Object.assign(props, binding.value);
+        if( typeof binding.value == 'string' )
+            props.animation = binding.value;
+        else
+            props = Object.assign(props, binding.value);
         el.classList.add('on-scroll');
 
         el.aos = new AOSInterface(el, props);

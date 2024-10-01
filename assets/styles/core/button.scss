@@ -40,3 +40,19 @@ button{ color: inherit }
   }
   &:before{ font-size: 35%; margin-top: 0.2em }
 }
+
+%plus{
+  width: 1.5em; height: 1.5em; display: inline-block; position: relative; border-radius: 50%; border: 1px solid;
+  flex-shrink: 0;
+  &:after, &:before{
+    content: ''; position: absolute; left: 30%; top: 50%;
+    width: 40%; border-bottom: 1px solid; transition: allow(opacity transform);
+  }
+  &:before{
+    transform: rotate(90deg);
+    .is-open &{ transform: rotate(270deg); opacity: 0 }
+  }
+  &:after{
+    .is-open &{ transform: rotate(180deg) }
+  }
+}

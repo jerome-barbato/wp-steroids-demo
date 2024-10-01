@@ -93,6 +93,7 @@ let app = new Vue({
             sticky: false,
             sticky_bottom: false,
             scroll: 0,
+            scroll_timer: 0,
             scrolled: 0,
             scroll_down: false,
             heights: {
@@ -119,6 +120,15 @@ let app = new Vue({
             }
         },
         catchScroll(e) {
+
+            clearTimeout(this.scroll_timer);
+
+            if(!document.body.classList.contains('disable-hover'))
+                document.body.classList.add('disable-hover')
+
+            this.scroll_timer = setTimeout(function(){
+                document.body.classList.remove('disable-hover')
+            }, 200);
 
             let scroll = document.documentElement.scrollTop || document.body.scrollTop
             let sticky = scroll>150

@@ -260,6 +260,20 @@ wordpress:
         cta:
           type: link
 
+    video:
+      title: Video
+      #description: Video
+      icon: 'format-video'
+      post_types:
+        - page
+        - guide
+      fields:
+        video:
+          type: url
+          placeholder: 'https://www.youtube.com/watch?v=FcTLMTyD2DU'
+        cover:
+          type: image
+
     contact:
       title: Contact
       #description: Featured article
