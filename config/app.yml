@@ -57,6 +57,12 @@ wordpress:
     - themes.php: site-editor.php?path=/patterns
     #- themes.php: nav-menus.php
 
+  ## Handle Customize experience on the server-side.
+  ## https://developer.wordpress.org/reference/classes/wp_customize_manager/
+  wp_customize:
+    remove_section:
+      - custom_css
+
   ## Customize WYSIWYG Editor TinyMCE Buttons
   ##https://www.tiny.cloud/docs/advanced/editor-control-identifiers/
   mce_buttons:
