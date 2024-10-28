@@ -1,6 +1,6 @@
 <?php
 
-class Options
+class Options  implements ArrayAccess
 {
     /**
      * Magic method to get property
@@ -33,5 +33,45 @@ class Options
         }
 
         return false;
+    }
+
+    /**
+     * @param $offset
+     * @return bool
+     */
+    public function offsetExists($offset): bool
+    {
+        return (bool)$this->get($offset);
+    }
+
+    /**
+     * @param $offset
+     * @return mixed
+     */
+    #[\ReturnTypeWillChange]
+    public function offsetGet($offset)
+    {
+        return $this->get($offset);
+    }
+
+    /**
+     * @param mixed $offset
+     * @param mixed $value
+     * @return void
+     */
+    #[\ReturnTypeWillChange]
+    public function offsetSet(mixed $offset, mixed $value)
+    {
+        // TODO: Implement offsetSet() method.
+    }
+
+    /**
+     * @param mixed $offset
+     * @return void
+     */
+    #[\ReturnTypeWillChange]
+    public function offsetUnset(mixed $offset)
+    {
+        // TODO: Implement offsetUnset() method.
     }
 }

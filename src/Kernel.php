@@ -199,6 +199,8 @@ abstract class Kernel extends \Timber\Site {
         if( !($block['front']??true) && !is_admin() )
             return;
 
+        $is_preview = $_REQUEST['query']['preview']??false;
+
         if( $is_preview && $image = $block['data']['_preview_image']??false ){
 
             echo '<img src="'.get_home_url().$image.'" style="width:100%;height:auto" class="preview_image"/>';
@@ -210,7 +212,8 @@ abstract class Kernel extends \Timber\Site {
         if( $id = self::get_post_id() )
             $context['post'] = Timber::get_post($id);
 
-        $context['props'] = $block['fields']??get_fields();
+        //todo: optimize to use $block['data']??
+        $context['props'] = get_fields();
 
         // Store field values.
         $context['block'] = $block;
@@ -249,6 +252,20 @@ abstract class Kernel extends \Timber\Site {
         $context['current_url'] = URLHelper::get_current_url();
         $context['blog'] = $this;
         $context['options'] = $this->options;
+
+        if( is_archive() ){
+
+            $archive_type = $this->getArchivePostType();
+            $context['archive'] = $this->options->get($archive_type);
+
+            if( is_array($context['archive']) ){
+
+                $context['archive']['link'] = get_post_type_archive_link($archive_type);
+
+                if( isset($context['archive']['title']) )
+                    $context['wp_title'] = $context['archive']['title'];
+            }
+        }
 
         return $context;
     }
@@ -397,7 +414,52 @@ abstract class Kernel extends \Timber\Site {
     }
 
     /**
-     * @param $src
+     * @param $image
+     * @param $width
+     * @param int $height
+     * @param bool $ext
+     * @return string
+     */
+    public function cropImage($image, $width, $height=0, $ext=false) {
+
+        $post_id = false;
+        $debug = ($_GET['debug']??false) == 'image' && defined('WP_DEBUG') && WP_DEBUG;
+        $crop = 'center';
+
+        if( $image instanceof Image )
+            $post_id = $image->id;
+        elseif( is_array($image) )
+            $post_id = $image['ID']??false;
+        elseif( is_int($image) )
+            $post_id = $image;
+
+        if( $post_id ){
+
+            $src = wp_get_original_image_path($post_id);
+            if( !file_exists($src) )
+                return '';
+
+            if( $_crop = get_post_meta($post_id, 'crop', true) )
+                $crop = $_crop;
+
+            if( !is_array($image) or !isset($image['url'], $image['alt'], $image['mime_type']) ){
+
+                $attachment = get_post( $post_id );
+
+                $image = wp_get_attachment_url( $attachment->ID );
+            }
+        }
+
+        if( !$image )
+            return '';
+
+        $src = $ext == 'webp' && function_exists('imagewebp') ? ImageHelper::img_to_webp($image['url']) : $image['url'];
+
+        return $debug ? $this->generatePlaceholder($width, $height) : $this->resizeImage($src, $width, $height, $crop);
+    }
+
+    /**
+     * @param $image
      * @param $width
      * @param $height
      * @param $sources
@@ -471,6 +533,8 @@ abstract class Kernel extends \Timber\Site {
         }
         else {
 
+            $webp_src = $ext ? ImageHelper::img_to_webp($image['url']) : false;
+
             if ($sources && is_array($sources)) {
 
                 foreach ($sources as $media => $size) {
@@ -481,9 +545,8 @@ abstract class Kernel extends \Timber\Site {
                     $target_width = $size[0] ?? 0;
                     $target_height = $size[1] ?? 0;
 
-                    if ($ext == 'webp') {
+                    if ( $webp_src ) {
 
-                        $webp_src = ImageHelper::img_to_webp($image['url']);
                         $url = $this->resizeImage($webp_src, $size[0] ?? 0, $size[1] ?? 0, $crop);
 
                         if( ($target_width > 0 && $target_width < 960 && $target_height < 960) || ($target_height > 0 && $target_height < 960 && $target_width < 960) ) {
@@ -511,9 +574,8 @@ abstract class Kernel extends \Timber\Site {
                 }
             }
 
-            if ($ext == 'webp') {
+            if ( $webp_src ) {
 
-                $webp_src = ImageHelper::img_to_webp($image['url']);
                 $url = $this->resizeImage($webp_src, $width, $height, $crop);
 
                 if( ( $width> 0 && $width < 960 && $height < 960 ) || ( $height > 0 && $height < 960 && $width < 960 ) ){
@@ -532,7 +594,8 @@ abstract class Kernel extends \Timber\Site {
             $au = ImageHelper::analyze_url($url);
             $upload_dir = wp_upload_dir();
 
-            $image_info = getimagesize($upload_dir['basedir'].$au['subdir'].'/'.$au['basename']);
+            if( !$image_info = getimagesize($upload_dir['basedir'].$au['subdir'].'/'.$au['basename']) )
+                return '';
 
             $html .= '<img loading="' . $loading . '" src="' . $url . '" alt="' . $image['alt'] . '" '.($image_info[0]?'width="'.$image_info[0].'"':'').' '.($image_info[1]?'height="'.$image_info[1].'"':'').'/>';
         }
@@ -575,6 +638,9 @@ abstract class Kernel extends \Timber\Site {
      */
     public function protectEmail($text)
     {
+        if( !$text )
+            return;
+
         preg_match_all( '/<a (.*)href="mailto:([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6})"(.*)>(.*)<\/a>/', $text, $potentialEmails, PREG_SET_ORDER );
 
         $potentialEmailsCount = count( $potentialEmails );
@@ -914,15 +980,78 @@ abstract class Kernel extends \Timber\Site {
      */
     public function getFirstBlock($post, $field=false){
 
-        if( !$post || !$post->post_content || !has_blocks($post) )
-            return false;
-
-        $blocks = parse_blocks($post->post_content);
+        $blocks = $this->getBlocks($post);
 
         if( !$field )
             return $blocks[0]['attrs']??false;
 
         return $blocks[0]['attrs']['data'][$field]??null;
+    }
+
+    /**
+     * @param $hex
+     * @return bool
+     */
+    function isColorDark($hex)
+    {
+        $average = 381; // range 1 - 765
+
+        if(strlen(trim($hex)) == 4)
+            $hex = "#" . substr($hex,1,1) . substr($hex,1,1) . substr($hex,2,1) . substr($hex,2,1) . substr($hex,3,1) . substr($hex,3,1);
+
+        return hexdec(substr($hex,1,2))+hexdec(substr($hex,3,2))+hexdec(substr($hex,5,2)) < $average;
+    }
+
+    /**
+     * @param WPS_Post $post
+     * @param $taxonomy
+     * @return int|string|null
+     */
+    function getPostPositionInTaxonomy($post, $taxonomy ) {
+
+        if( !$post instanceof \Timber\Post )
+            return null;
+
+        $terms = wp_get_post_terms( $post->id, $taxonomy );
+
+        if ( !empty( $terms ) && !is_wp_error( $terms ) ) {
+
+            $term_id = $terms[0]->term_id;
+
+            $args = array(
+                'post_type' => $post->post_type,
+                'posts_per_page' => -1,
+                'tax_query' => array(
+                    array(
+                        'taxonomy' => $taxonomy,
+                        'field'    => 'term_id',
+                        'terms'    => $term_id,
+                    ),
+                ),
+                'fields'  => 'ids'
+            );
+
+            $post_ids = get_posts( $args );
+
+            $position = array_search( $post->id, $post_ids );
+
+            if ( $position !== false )
+                return $position + 1;
+        }
+
+        return null;
+    }
+
+    /**
+     * @param $post
+     * @return array
+     */
+    public function getBlocks($post){
+
+        if( !$post || !$post->post_content || !has_blocks($post) )
+            return [];
+
+        return parse_blocks($post->post_content);
     }
 
     public function enqueue_contact_form_scripts(){
@@ -1004,6 +1133,16 @@ abstract class Kernel extends \Timber\Site {
         return false;
     }
 
+    /**
+     * @return false|mixed
+     */
+    public function getArchivePostType(){
+
+        global $wp_query;
+
+        return $wp_query->query['post_type']??false;
+    }
+
     /** This is where you can add your own functions to twig.
      *
      * @param Twig_Environment $twig get extension.
@@ -1027,21 +1166,26 @@ abstract class Kernel extends \Timber\Site {
         $twig->addFunction( new Twig\TwigFunction( 'calculated_carbon', 'get_calculated_carbon' ) );
         $twig->addFunction( new Twig\TwigFunction( 'is_front_page',  'is_front_page' ) );
         $twig->addFunction( new Twig\TwigFunction( 'is_404',  'is_404' ) );
+        $twig->addFunction( new Twig\TwigFunction( 'archive_post_type',  [$this, 'getArchivePostType'] ) );
         $twig->addFunction( new Twig\TwigFunction( 'is_archive',  'is_archive' ) );
         $twig->addFunction( new Twig\TwigFunction( 'is_sticky',  'is_sticky' ) );
         $twig->addFunction( new Twig\TwigFunction( 'archive_title',  'get_the_archive_title' ) );
         $twig->addFunction( new Twig\TwigFunction( 'is_singular',  'is_singular' ) );
         $twig->addFunction( new Twig\TwigFunction( 'get_page_by_state',  [$this, 'getPageByState'] ) );
+        $twig->addFunction( new Twig\TwigFunction( 'get_position_in_tax',  [$this, 'getPostPositionInTaxonomy'] ) );
+        $twig->addFunction( new Twig\TwigFunction( 'is_dark',  [$this, 'isColorDark'] ) );
 
         $twig->addFilter( new Twig\TwigFilter( 'assign', [$this, 'assign'] ) );
         $twig->addFilter( new Twig\TwigFilter( 'intval', 'intval' ) );
         $twig->addFilter( new Twig\TwigFilter( 'placeholder', [$this, 'placeholder'] ) );
         $twig->addFilter( new Twig\TwigFilter( 'has_block', [$this, 'hasBlock'] ) );
         $twig->addFilter( new Twig\TwigFilter( 'first_block', [$this, 'getFirstBlock'] ) );
+        $twig->addFilter( new Twig\TwigFilter( 'get_blocks', [$this, 'getBlocks'] ) );
         $twig->addFilter( new Twig\TwigFilter( 'lottie_placeholder', [$this, 'generateLottiePlaceholder'] ) );
         $twig->addFilter( new Twig\TwigFilter( 'handle', 'sanitize_title' ) );
         $twig->addFilter( new Twig\TwigFilter( 'table', [$this, 'generateTable'] ) );
         $twig->addFilter( new Twig\TwigFilter( 'picture', [$this, 'generatePicture'] ) );
+        $twig->addFilter( new Twig\TwigFilter( 'crop', [$this, 'cropImage'] ) );
         $twig->addFilter( new Twig\TwigFilter( 'figure', [$this, 'generateFigure'] ) );
         $twig->addFilter( new Twig\TwigFilter( 't', [$this,'translate'] ) );
         $twig->addFilter( new Twig\TwigFilter( 'ucfirst', 'ucfirst' ) );

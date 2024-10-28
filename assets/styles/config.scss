@@ -45,17 +45,18 @@ $c-image-placeholder: rgba(0,0,0,0.05);
   --c-border-input: #bdcde1;
   --c-transparent: rgba(255,255,255,0.3) ;
   --c-placeholder-color: #93B1D9;
+  --space-xl: 6rem;
+  --space-xxl: 8rem;
+  --space-xxxl: 10rem;
   --space-section: 12rem;
   --padding-section: 4rem;
   --grid-gap: 8rem;
-  --grid-container-w: 75%;
+  --grid-container-w: 114rem;
   --font-title: 'inter', arial, serif;
   --font-text: 'inter', arial, sans-serif;
 }
 
 // Sizes
-$container-max-w : 1920px;
-$container-w : 1440px;
 $app-h : var(--app-height);
 $app-init-h : var(--app-init-height);
 $header-h : var(--header-h);
@@ -69,9 +70,9 @@ $space-xs: 8px;
 $space-s: 10px;
 $space-m: 3rem;
 $space-l: 4rem;
-$space-xl: 6rem;
-$space-xxl: 8rem;
-$space-xxxl: 10rem;
+$space-xl: var(--space-xl);
+$space-xxl: var(--space-xxl);
+$space-xxxl: var(--space-xxxl);
 $space-section: var(--space-section);
 $padding-section: var(--padding-section);
 
@@ -83,6 +84,7 @@ $inputs :
 
 
 // Fonts - please use https://transfonter.org, no Autohint, WOFF and WOFF2 formats only
+// OR https://webfont.yabe.land/en/misc/convert-ttf-woff2/ for variable fonts
 
 // Name            Variant    Weight     Style    Stretch   Fallback   Version
 $fonts :
@@ -97,8 +99,8 @@ $font-text: var(--font-text);
 $font-xxs: 10px;
 $font-xs: 12px;
 $font-s: 14px;
-$font-m: 16px;
-$font-ml: 20px;
+$font-m: 1.6rem;
+$font-ml: 2rem;
 $font-l: 2.4rem;
 $font-ll: 3.8rem;
 $font-xl: 4.8rem;

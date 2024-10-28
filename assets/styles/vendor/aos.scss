@@ -38,7 +38,7 @@ $aos-animations-list:
 			animation-name: slide-up; will-change: opacity, transform;
 			@for $i from 1 through 20{
 
-				&:nth-child(#{$i}){ animation-delay: $i*$aos-delay}
+				&:nth-child(#{$i}){ animation-delay: ($i - 1)*$aos-delay}
 			}
 		}
 	}

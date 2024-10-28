@@ -54,12 +54,8 @@ html{
 
 
 .wysiwyg{
-  font-size: $font-s;
   h1{ @extend %title-main }
-  h2{
-    @extend %text-hero;
-    @media #{$to-phone} { font-size: $font-l }
-  }
+  h2{ @extend %title-section }
   a, email{ text-decoration: underline; cursor: pointer }
   h3{ @extend %text-hero }
   h4{ @extend %text-medium }

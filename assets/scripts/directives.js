@@ -60,4 +60,18 @@ const anchor = {
 	}
 };
 
-export {youtube, anchor, link, table}
+import SplitType from 'split-type'
+
+const split = {
+	inserted(el, binding, vnode) {
+
+		if( binding.value )
+			binding.value.tagName = 'span'
+		else
+			binding.value = {tagName:'span'}
+
+		const text = new SplitType(el,binding.value)
+	}
+};
+
+export {youtube, anchor, link, table, split}

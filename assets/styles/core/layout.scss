@@ -21,7 +21,7 @@ body{
   width: 100%; position: relative;
   .container{
     margin-left: auto; margin-right: auto; display: flex; flex-flow: column;
-    position: relative; width: $grid-container-w; max-width: $grid-container-max;
+    position: relative; width: calc( 100% - 8rem); max-width: $grid-container-w;
     .container{ width: 100% }
     &--empty{
       text-align: center; padding-top: $space-section; position: static;
@@ -31,7 +31,7 @@ body{
       }
     }
     &--large{
-      max-width: $container-max-w; width: calc( 100% - 40px);
+      max-width: $grid-container-max;
       .container{ width: 100% }
     }
     &--full{
@@ -40,12 +40,12 @@ body{
   }
 
   main{
-    position: relative; width: 100%; margin-top: $header-h;
+    position: relative; width: 100%;
     @media print { margin-top: 0 }
   }
 
   .sections{
-    width: 100%;
+    width: 100%; padding-top: $header-h;
     margin-left: auto; margin-right: auto;
     min-height: calc(#{$app-init-h} - #{$header-h} - #{$footer-h});
   }

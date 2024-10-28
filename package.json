@@ -1,6 +1,7 @@
 {
     "dependencies": {
         "dayjs": "^1.11.13",
+        "split-type": "^0.3.4",
         "just-camel-case": "^6.2.0",
         "object-hash": "^3.0.0",
         "vue": "2.7.13",

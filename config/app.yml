@@ -123,6 +123,12 @@ wordpress:
       fields:
         gtm:
           type: text
+    seo:
+      fields:
+        facebook_username:
+          type: text
+        twitter_username:
+          type: text
     translations:
       fields:
         translations:
@@ -248,6 +254,7 @@ wordpress:
       description: Page Hero
       supports:
         multiple: false
+        align_text: 'left'
       icon: 'editor-alignleft'
       post_types:
         - page
@@ -533,6 +540,7 @@ wordpress:
     xmlrpc: false
     pings: false
     disable_update: true
+    unfiltered_html: false
 
   ##################
   ##    Search    ##

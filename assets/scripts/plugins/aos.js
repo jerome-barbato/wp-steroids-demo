@@ -221,6 +221,39 @@ function AOSInterface($el, props){
             else
                 data.locked = true
         },
+        rotate: function(pos){
+
+            let offset = 0;
+
+            if (pos > data.bounding.top && data.bounding.bottom > window.scrollY) {
+
+                if (data.bounding.top < window.innerHeight) {
+                    offset = window.scrollY / data.bounding.bottom;
+                } else {
+                    offset = (pos - data.bounding.top) / (data.bounding.bottom + window.innerHeight - data.bounding.top);
+                }
+            }
+            else {
+
+                offset = pos > data.bounding.top ? 1 : 0;
+            }
+
+            offset = Math.max(0, Math.min(1, offset));
+            offset = props.invert ? 1 - offset : offset;
+            offset = props.center ? offset - 0.5 : offset;
+
+            if( data.current !== offset)
+            {
+                data.current = offset;
+
+                let value = data.strengthPercent ? Math.round(offset*data.strength*1000)/1000 : Math.round(offset*data.strength*10)/10;
+                let strength = 0;
+
+                strength = value+'deg';
+                $el.style.transform = 'rotate('+strength+')';
+                $el.style.WebkitTransform = 'rotate('+strength+')';
+            }
+        },
         parallax: function(pos){
 
             let offset = 0;
@@ -247,18 +280,24 @@ function AOSInterface($el, props){
                 data.current = offset;
 
                 let value = data.strengthPercent ? Math.round(offset*data.strength*1000)/1000 : Math.round(offset*data.strength*10)/10;
-                let strength = data.strengthPercent ? value+'%' : value+'px';
+                let strength = 0;
 
+                strength = data.strengthPercent ? value+'%' : value+'px';
                 $el.style.transform = 'translateY('+strength+')';
                 $el.style.WebkitTransform = 'translateY('+strength+')';
 
                 if( !data.strengthPercent ){
+
                     clearTimeout(data.timeout);
+
                     data.timeout = setTimeout(function(){
+
                         value = Math.round(value);
+
                         strength = data.strengthPercent ? value+'%' : value+'px';
                         $el.style.transform = 'translateY('+strength+')';
                         $el.style.WebkitTransform = 'translateY('+strength+')';
+
                     },100);
                 }
             }
@@ -274,10 +313,13 @@ function AOSInterface($el, props){
             else
                 pos = window.scrollY + window.innerHeight - data.offset;
 
-            if ( (data.bounding.top <= pos && !data.shown) || props.animation === 'parallax') {
+            if ( (data.bounding.top <= pos && !data.shown) || props.animation === 'parallax' || props.animation === 'rotate') {
 
                 if( props.animation === 'parallax') {
                     methods.parallax(pos);
+                }
+                else if( props.animation === 'rotate') {
+                    methods.rotate(pos);
                 }
                 else if( props.animation === 'increment') {
 
@@ -296,7 +338,7 @@ function AOSInterface($el, props){
                         $el.style[aosPrefixAnimation.fn + 'Duration'] = data.duration + (data.duration < 10 ? 's' : 'ms');
 
                     if( props.animation === 'stack' )
-                        $el.childNodes[$el.childNodes.length-1].addEventListener(aosPrefixAnimation.end, methods.end, false);
+                       $el.childNodes[$el.childNodes.length-1].addEventListener(aosPrefixAnimation.end, methods.end, false);
                     else
                         $el.addEventListener(aosPrefixAnimation.end, methods.end, false);
                 }
@@ -400,15 +442,15 @@ let AOSDirective = {
         let props = {
             animation: 'slide-up' ,
             delay: 0,
-            offset: 50,
-            strength: 100,
+            offset: 150,
+            strength: 200,
             duration: 0.5,
             invert: false,
-            center: true,
+            center: false,
             loop: false,
             small: 'active',
             tablet: 'active',
-            phone: 'active'
+            phone: 'disabled'
         };
 
         if( typeof binding.value == 'string' )

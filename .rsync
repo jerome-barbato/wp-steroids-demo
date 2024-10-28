@@ -16,3 +16,6 @@ wml.config.js
 .rsync
 auth.json
 node_modules
+.babelrc
+auth.json.sample
+docker-compose.yml

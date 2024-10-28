@@ -23,12 +23,17 @@ import 'regenerator-runtime/runtime'
 
 Vue.config.productionTip = false;
 
+// load components
+import {email} from './components'
+Vue.component('email', email);
+
 // load directives
-import {youtube, anchor, link, table} from './directives'
+import {youtube, anchor, link, table, split} from './directives'
 Vue.directive('youtube', youtube);
 Vue.directive('anchor', anchor);
 Vue.directive('link', link);
 Vue.directive('table', table);
+Vue.directive('split', split);
 
 // load filters
 import {hash, formatNumber} from './filters'
@@ -89,7 +94,6 @@ let app = new Vue({
             isMobile: window.innerWidth<768,
             isTablet: window.innerWidth<=1024,
             popin: false,
-            displayed: false,
             sticky: false,
             sticky_bottom: false,
             scroll: 0,
@@ -111,10 +115,10 @@ let app = new Vue({
             }
             else{
 
-                if( this.displayed === classname)
-                    this.displayed = false;
+                if( this.popin === classname)
+                    this.popin = false;
                 else
-                    this.displayed = classname;
+                    this.popin = classname;
 
                 document.body.classList.toggle('has-'+classname)
             }
@@ -224,6 +228,9 @@ let app = new Vue({
             this.heights.footer = this.$refs.footer ? this.$refs.footer.clientHeight : 0;
             this.heights.header = this.$refs.header.clientHeight;
         },
+        handleHash(){
+
+        },
         emit(event, params){
             eventBus.$emit(event, params);
         }
@@ -234,25 +241,26 @@ let app = new Vue({
 
         this.catchScroll(false);
         this.catchResize();
+        this.handleHash();
 
         let body_classList = document.body.classList;
         body_classList.remove('loading');
         body_classList.add('loaded');
+
+        let is_desktop = false
+
+        if( typeof navigator.userAgentData == 'undefined' )
+            is_desktop = navigator.userAgent.toLowerCase().indexOf("android") === -1 && navigator.userAgent.toLowerCase().indexOf("iphone") === -1
+        else
+            is_desktop = !navigator.userAgentData.mobile
+
+        body_classList.add(is_desktop?'desktop':'mobile')
     },
     created() {
 
         window.addEventListener('scroll', this.catchScroll);
         window.addEventListener('resize', this.catchResize);
-
-        if( typeof navigator.userAgentData == 'undefined' ){
-
-            if( navigator.userAgent.toLowerCase().indexOf("android") === -1 && navigator.userAgent.toLowerCase().indexOf("iphone") === -1 )
-                document.body.classList.add('desktop')
-        }
-        else if(!navigator.userAgentData.mobile){
-
-            document.body.classList.add('desktop')
-        }
+        window.addEventListener('hashchange', this.handleHash);
 
         eventBus.$on('popin', (html)=>{
 

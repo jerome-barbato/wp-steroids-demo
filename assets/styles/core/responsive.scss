@@ -1,7 +1,10 @@
 :root{
   @media #{$to-phone} {
-    --space-section: 6rem;
-    --header-h: 71px;
+    --space-xxxl: 6rem;
+    --space-xxl: 4rem;
+    --space-xl: 4rem;
+    --space-section: 8rem;
+    --header-h: 8rem;
   }
 }
 
