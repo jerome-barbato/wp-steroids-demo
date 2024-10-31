@@ -1,4 +1,4 @@
-import Vue from "vue";
+import {axios} from "axios";
 
 let ajax_url = document.head.querySelector('meta[name="home-url"]').content+'/api'
 
@@ -10,7 +10,7 @@ export default {
 
             data.action = 'getData';
 
-            Vue.http.post(ajax_url, data, {emulateJSON:true}).then(response => {
+            axios.post(ajax_url, data, {emulateJSON:true}).then(response => {
 
                 resolve(response.body);
 

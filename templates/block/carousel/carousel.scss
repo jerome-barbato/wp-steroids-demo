@@ -1,0 +1,9 @@
+.b-carousel{
+  .container{ grid-gap: $space-l }
+  &__title{ @extend %text-hero; text-align: center }
+  &__item{
+    display: flex; flex-flow: column; padding: $space-xxl; position: relative; grid-gap: $space-m;
+    background: $c-black; color: $c-white; text-align: center;
+    &-title{ @extend %text-medium }
+  }
+}

@@ -7,92 +7,25 @@
  * Version: 2
  *
  * Requires:
- *   - VueJS
+ *   - VueJS3
  *
  **/
 
 'use strict';
 
-// load Vuejs
-import Vue from 'vue';
-
-const upperFirst = str => `${str.charAt(0).toUpperCase()}${str.slice(1)}`
-import camelCase from 'just-camel-case';
-
 import 'regenerator-runtime/runtime'
 
-Vue.config.productionTip = false;
+// load browser detection
+import Bowser from "bowser";
+const browser = Bowser.getParser(window.navigator.userAgent);
 
-// load components
-import {email} from './components'
-Vue.component('email', email);
+// load Vuejs
+import { createApp } from 'vue'
 
-// load directives
-import {youtube, anchor, link, table, split} from './directives'
-Vue.directive('youtube', youtube);
-Vue.directive('anchor', anchor);
-Vue.directive('link', link);
-Vue.directive('table', table);
-Vue.directive('split', split);
-
-// load filters
-import {hash, formatNumber} from './filters'
-Vue.filter('hash', hash);
-Vue.filter('formatNumber', formatNumber);
-
-import Plugins from './plugins'
-Vue.use(Plugins);
-
-import store from './store'
-
-// load design system atoms, molecules, organisms
-let blocks = require.context("../../templates", true, /^\.\/[^.]+\.js$/);
-blocks.keys().forEach(fileName => {
-
-    const blockConfig = blocks(fileName)
-    const blockName = blockConfig.default.name || upperFirst(camelCase(fileName.split('/').pop().replace(/\.\w+$/, '')))
-
-    //create global block
-    Vue.component(blockName, blockConfig.default || blockConfig)
-});
-
-import VueResource from 'vue-resource';
-Vue.use(VueResource);
-
-import SsrCarousel from 'vue-ssr-carousel';
-Vue.component('ssr-carousel', SsrCarousel);
-
-import SlideUpDown from 'vue-slide-up-down'
-Vue.component('slide-up-down', SlideUpDown)
-
-import VueObserveVisibility from 'vue-observe-visibility'
-Vue.use(VueObserveVisibility)
-
-import Vue2TouchEvents from 'vue2-touch-events';
-import eventBus from "./event-bus";
-Vue.use(Vue2TouchEvents);
-
-import VueAOS from './plugins/aos';
-Vue.use(VueAOS);
-
-Vue.http.interceptors.push((req, next) => {
-    next((res) => {
-
-        //if (res.status === xxx)
-
-        return res
-    })
-})
-
-// start app
-let app = new Vue({
-    store,
-    el: '#root',
+const app = createApp({
     delimiters: ['[[', ']]'],
     data(){
         return{
-            isMobile: window.innerWidth<768,
-            isTablet: window.innerWidth<=1024,
             popin: false,
             sticky: false,
             sticky_bottom: false,
@@ -103,7 +36,7 @@ let app = new Vue({
             heights: {
                 footer: 0,
                 header: 0
-            },
+            }
         }
     },
     methods:{
@@ -155,6 +88,7 @@ let app = new Vue({
 
                 if( timeout )
                     clearTimeout(timeout);
+
                 timeout = setTimeout(function (){
                     document.body.classList.remove('has-seen-page')
                 },300)
@@ -222,17 +156,23 @@ let app = new Vue({
 
             document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`);
 
-            this.isMobile = window.innerWidth<768;
-            this.isTablet = window.innerWidth<=1024;
-
             this.heights.footer = this.$refs.footer ? this.$refs.footer.clientHeight : 0;
             this.heights.header = this.$refs.header.clientHeight;
         },
         handleHash(){
 
         },
-        emit(event, params){
-            eventBus.$emit(event, params);
+        addBrowserClasses(){
+
+            if( !browser.satisfies({"internet explorer": ">11", safari: '>=13', chrome: ">=85", firefox: ">=83", edge: ">=84"}) ){
+
+                document.body.classList.add('unsupported-browser')
+            }
+            else{
+
+                document.body.classList.add(browser.getPlatformType(true))
+                document.body.classList.add(browser.getOSName(true))
+            }
         }
     },
     mounted(){
@@ -243,30 +183,48 @@ let app = new Vue({
         this.catchResize();
         this.handleHash();
 
-        let body_classList = document.body.classList;
-        body_classList.remove('loading');
-        body_classList.add('loaded');
-
-        let is_desktop = false
-
-        if( typeof navigator.userAgentData == 'undefined' )
-            is_desktop = navigator.userAgent.toLowerCase().indexOf("android") === -1 && navigator.userAgent.toLowerCase().indexOf("iphone") === -1
-        else
-            is_desktop = !navigator.userAgentData.mobile
-
-        body_classList.add(is_desktop?'desktop':'mobile')
+        document.body.classList.remove('loading');
+        document.body.classList.add('loaded');
     },
     created() {
+
+        this.addBrowserClasses();
 
         window.addEventListener('scroll', this.catchScroll);
         window.addEventListener('resize', this.catchResize);
         window.addEventListener('hashchange', this.handleHash);
-
-        eventBus.$on('popin', (html)=>{
-
-            this.popin = html
-        })
     }
 });
+
+// load components
+import {email, youtube} from './components'
+app.component('email', email);
+app.component('youtube', youtube);
+
+// load directives
+import {split} from './directives'
+app.directive('split', split);
+
+// register Swiper custom elements
+import { register } from 'swiper/element/bundle';
+register();
+
+// load blocks
+let blocks = require.context("../../templates", true, /^\.\/[^.]+\.js$/);
+blocks.keys().forEach(fileName => {
+
+    const blockConfig = blocks(fileName)
+    const blockName = blockConfig.default.name || fileName.split('/').pop().replace(/\.\w+$/, '')
+
+    //create global block
+    app.component(blockName, blockConfig.default || blockConfig)
+});
+
+// load plugins
+import VueAOS from './plugins/aos';
+app.use(VueAOS);
+
+// start app
+app.mount('#root')
 
 export default app

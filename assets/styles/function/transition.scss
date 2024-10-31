@@ -1,4 +1,6 @@
+@use "sass:list";
 @use "sass:math";
+@use "sass:string";
 
 @function allow($properties, $speed:$transition-duration, $easing:$ease-in-out-cubic, $performance:true) {
 
@@ -11,18 +13,18 @@
 
   @each $property in $properties {
 
-    $will-change : append($will-change, $property);
-    @if($i < length($properties)-1){
-      $will-change : append($will-change, unquote(','));
+    $will-change : list.append($will-change, $property);
+    @if($i < list.length($properties)-1){
+      $will-change : list.append($will-change, string.unquote(','));
     }
     $i: $i+1;
   }
 
   @if($performance == true ){
-    @return $will-change+unquote('; transition-duration:')+$speed+unquote('; transition-timing-function:')+$easing+unquote('; will-change:')+$will-change+unquote(';');
+    @return $will-change+string.unquote('; transition-duration:')+$speed+string.unquote('; transition-timing-function:')+$easing+string.unquote('; will-change:')+$will-change+string.unquote(';');
   }
   @else{
-    @return $will-change+unquote('; transition-duration:')+$speed+unquote('; transition-timing-function:')+$easing+unquote(';');
+    @return $will-change+string.unquote('; transition-duration:')+$speed+string.unquote('; transition-timing-function:')+$easing+string.unquote(';');
   }
 }
 

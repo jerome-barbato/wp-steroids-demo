@@ -5,9 +5,7 @@
 	$width: 20px;
 	$offset: 800%;
 
-	display: inline-flex; padding: 0; align-items: center; border-radius: 50%; outline: 1px solid transparent; outline-offset: 6px;
-	@media #{$to-phone} { outline-offset: 10px }
-	.burger-is-open &{ outline-color: inherit }
+	display: inline-flex; padding: 0; align-items: center;
 	&__link{ margin-right: $space-s; line-height:1 }
 	&__icon {
 		height:$width; width: $width; cursor: pointer; background: none; border: 0; position: relative;
@@ -35,5 +33,3 @@
 		}
 	}
 }
-
-burger{ display: none }

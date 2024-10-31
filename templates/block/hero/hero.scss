@@ -1,5 +1,5 @@
 .b-hero{
-  background: $c-theme-alt; padding: $space-section;
+  background: $c-theme-alt; padding: $space-section 0;
   .container{ align-items: center; grid-gap: $space }
   &__suptitle{ @extend %text-small }
   &__title{ @extend %title-main }

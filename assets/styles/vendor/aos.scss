@@ -1,4 +1,6 @@
 @use "sass:math";
+@use "sass:list";
+@use "sass:string";
 
 on-scroll, [v-on-scroll]{ visibility: hidden }
 
@@ -26,9 +28,9 @@ $aos-animations-list:
 	animation-delay: 0.1s;
 	&--wait{ visibility: hidden }
 	@each $animation in $aos-animations-list{
-		$name       : nth($animation, 1);
-		$properties : nth($animation, 2);
-		&--#{$name}{ animation-name: $name; will-change: unquote($properties) }
+		$name       : list.nth($animation, 1);
+		$properties : list.nth($animation, 2);
+		&--#{$name}{ animation-name: $name; will-change: string.unquote($properties) }
 	}
 	&--increment{ animation-name: fade-in; will-change: opacity }
 	&--stack{

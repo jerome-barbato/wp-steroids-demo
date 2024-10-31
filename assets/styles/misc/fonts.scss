@@ -1,3 +1,7 @@
+@use "sass:list";
+@use "sass:map";
+@use "sass:string";
+
 $font-families : ()!default;
 $font-woof2 : true!default;
 $font-woof  : false!default;
@@ -5,13 +9,13 @@ $font-display : auto!default;
 
 @each $font in $fonts {
 
-  $family   : nth($font, 1);
-  $variant  : nth($font, 2);
-  $weight   : nth($font, 3);
-  $style    : nth($font, 4);
-  $stretch  : nth($font, 5);
-  $fallback : nth($font, 6);
-  $version  : nth($font, 7);
+  $family   : list.nth($font, 1);
+  $variant  : list.nth($font, 2);
+  $weight   : list.nth($font, 3);
+  $style    : list.nth($font, 4);
+  $stretch  : list.nth($font, 5);
+  $fallback : list.nth($font, 6);
+  $version  : list.nth($font, 7);
   $src      : #{$family}/#{$family}-#{$variant}-#{$style};
 
   @font-face {
@@ -37,8 +41,8 @@ $font-display : auto!default;
   }
 
 
-  @if not map-has-key($font-families, to-lower-case($family)){
-    $new-font: (to-lower-case($family): '#{$family}, #{$fallback}');
-    $font-families : map-merge($font-families, $new-font);
+  @if not map.has-key($font-families, string.to-lower-case($family)){
+    $new-font: (string.to-lower-case($family): '#{$family}, #{$fallback}');
+    $font-families : map.merge($font-families, $new-font);
   }
 }

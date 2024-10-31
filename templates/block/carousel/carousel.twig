@@ -1,0 +1,17 @@
+<section class="b-carousel">
+	<div class="container">
+		<h3 class="b-carousel__title">{{ props.title }}</h3>
+		<div class="b-carousel__items">
+			<swiper-container slides-per-view="1">
+				{% for item in props.items %}
+					<swiper-slide class="b-carousel__item">
+						<h3 class="b-carousel__item-title">{{ item.title }}</h3>
+						{% if item.description %}
+							<div class="b-carousel__item-description">{{ item.description }}</div>
+						{% endif %}
+					</swiper-slide>
+				{% endfor %}
+			</swiper-container>
+		</div>
+	</div>
+</section>

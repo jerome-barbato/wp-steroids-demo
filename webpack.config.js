@@ -1,4 +1,6 @@
 const Encore = require('@symfony/webpack-encore');
+const webpack = require('webpack');
+
 const globSassImporter = require('node-sass-glob-importer');
 const path = require('path');
 
@@ -59,6 +61,12 @@ Encore
         };
     }, {})
 
+    .addPlugin(new webpack.DefinePlugin({
+        __VUE_OPTIONS_API__: true,
+        __VUE_PROD_DEVTOOLS__: !Encore.isProduction(),
+        __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: !Encore.isProduction()
+    }))
+
     .enablePostCssLoader()
 
     .configureImageRule({
@@ -94,6 +102,6 @@ Encore
 ;
 
 let config = Encore.getWebpackConfig();
-config.resolve.alias["vue"] = 'vue/dist/vue.esm.js';
+config.resolve.alias["vue"] = 'vue/dist/vue.esm-bundler';
 
 module.exports = config;

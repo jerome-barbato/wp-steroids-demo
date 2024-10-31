@@ -1,12 +1,12 @@
 <section class="b-hero b-hero--{{ block.align_text }}">
-    <div class="container">
+    <div class="container" v-on-scroll="'stack'">
         <h2 class="b-hero__suptitle">{{ props.suptitle }}</h2>
         <h1 class="b-hero__title">{{ props.title|default(post.title|default('Add title'|t)) }}</h1>
         <div class="b-hero__content">{{ props.content|raw }}</div>
         {% include 'partial/cta/cta.twig' with { props: props.cta } %}
         {% if props.image %}
             <div class="b-hero__image">
-                {{ props.image|picture(800,200,{'lazy':false})|placeholder }}
+                {{ props.image|picture(800,200,{'max-width: 480px':[480,350], 'lazy':false})|placeholder }}
             </div>
         {% endif %}
     </div>

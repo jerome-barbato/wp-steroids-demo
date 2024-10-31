@@ -1,0 +1,7 @@
+swiper-container{
+  display: flex; width: 100%; overflow: hidden;
+  swiper-slide{ flex-shrink: 0 }
+  &[slides-per-view="1"] swiper-slide{ flex-basis: 100% }
+  &[slides-per-view="2"] swiper-slide{ flex-basis: 50% }
+  &[slides-per-view="3"] swiper-slide{ flex-basis: 33.3334% }
+}

@@ -1,0 +1,8 @@
+.b-toggles{
+  .c-dropdown{
+    &__toggle{
+      background: $c-theme-alt; padding: $space-l; padding-right: $space-section; position: relative; display: block;
+      @extend %text-hero; font-weight: 500;
+    }
+  }
+}

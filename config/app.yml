@@ -294,6 +294,52 @@ wordpress:
       post_types:
         - page
 
+    carousel:
+      title: Carousel
+      #description: Featured article
+      icon: 'slides'
+      post_types:
+        - page
+      fields:
+        title:
+          type: text
+        items:
+          type: repeater
+          layout: block
+          sub_fields:
+            title:
+              type: text
+            description:
+              type: textarea
+
+    toggles:
+      title: Toggles
+      #description: Featured article
+      icon: 'sort'
+      post_types:
+        - page
+      fields:
+        items:
+          type: repeater
+          layout: block
+          sub_fields:
+            title:
+              type: text
+            description:
+              type: textarea
+
+    dropdown:
+      title: Dropdown
+      #description: Featured article
+      icon: 'sort'
+      post_types:
+        - page
+      fields:
+        title:
+          type: text
+        description:
+          type: textarea
+
     #hero-home:
     #  title: Homepage hero
     #  description: Display a slider

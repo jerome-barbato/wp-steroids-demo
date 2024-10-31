@@ -1,3 +1,5 @@
+@use "sass:list";
+
 //include icon
 $icons: false !default;
 
@@ -21,8 +23,8 @@ $icons: false !default;
 
   @each $icon in $icons {
 
-    $id      : nth($icon, 1);
-    $content : nth($icon, 2);
+    $id      : list.nth($icon, 1);
+    $content : list.nth($icon, 2);
 
     %icon-#{$id}{ content: $content }
   }
@@ -33,8 +35,8 @@ $icons: false !default;
 
 @each $icon in $icons {
 
-  $id      : nth($icon, 1);
-  $content : nth($icon, 2);
+  $id      : list.nth($icon, 1);
+  $content : list.nth($icon, 2);
 
   [data-icon="#{$id}"]:before, [data-icon_after="#{$id}"]:after,
   [icon="#{$id}"]:before, [icon-after="#{$id}"]:after{ @extend %icon-#{$id} }

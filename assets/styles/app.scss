@@ -1,12 +1,14 @@
 /*
-* Boilerplate - 2023
+* Boilerplate - 2024
 *
 * Akhela.fr
+
+* Todo: replace @import with @use
 */
 
 @import "config";
-
 @import "reset";
+
 
 /*
 * Services
@@ -26,12 +28,18 @@
 @import "vendor/**/*.scss";
 
 
+/* Components
+*/
+@import "component/**/*.scss";
+
+
 /* Blocks
-*  Exemple : hero
+*  Example : hero
 */
 @import "../../templates/block/**/*.scss";
 
+
 /* Partials
-*  Exemple : cta
+*  Example : cta
 */
 @import "../../templates/partial/**/*.scss";

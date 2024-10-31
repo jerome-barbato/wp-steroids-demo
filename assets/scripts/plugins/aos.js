@@ -82,7 +82,7 @@ function AOSInterface($el, props){
     data.duration = parseFloat(String(props.duration).replace('ms','').replace('s',''));
 
     let methods = {
-        mounted: function() {
+        mounted() {
             if(
                 (props.phone !== "disabled" && window.innerWidth <= 640) ||
                 (props.tablet !== "disabled" && window.innerWidth <= 768 && window.innerWidth > 640) ||
@@ -109,7 +109,7 @@ function AOSInterface($el, props){
                 $el.classList.remove('on-scroll');
             }
         },
-        update: function(){
+        update(){
 
             if( data.disabled )
                 return;
@@ -122,7 +122,7 @@ function AOSInterface($el, props){
 
             methods.scroll();
         },
-        updateClient: function(event){
+        updateClient(event){
 
             data.clientX = event.clientX;
             data.clientY = event.clientY;
@@ -148,18 +148,18 @@ function AOSInterface($el, props){
                 }, {duration: 1000, fill: "forwards"})
             }
         },
-        listen: function(){
+        listen(){
             document.addEventListener('mousemove', methods.updateClient);
             document.addEventListener('resize', methods.update);
             document.addEventListener('scroll', methods.update, supportsPassive?{passive:true}:false );
             methods.update();
         },
-        destroyed: function(){
+        destroyed(){
             clearInterval(data.interval);
             document.removeEventListener('scroll', methods.update);
             document.removeEventListener('resize', methods.update);
         },
-        end: function(){
+        end(){
 
             if( data.delay )
                 $el.style[aosPrefixAnimation.fn+'Delay'] = '';
@@ -170,7 +170,7 @@ function AOSInterface($el, props){
             $el.classList.remove('on-scroll--'+props.animation);
             $el.classList.remove('on-scroll');
         },
-        startCounter: function(el) {
+        startCounter(el) {
 
             data.locked = true;
 
@@ -209,19 +209,19 @@ function AOSInterface($el, props){
 
             requestAnimationFrame(loop); // Start the loop!
         },
-        increment: function(pos){
+        increment(pos){
 
             if (pos > data.bounding.top && !data.locked && document.documentElement.lang.length)
                 methods.startCounter($el)
         },
-        follow: function(pos){
+        follow(pos){
 
             if (pos > data.bounding.top && data.bounding.bottom > window.scrollY)
                 data.locked = false
             else
                 data.locked = true
         },
-        rotate: function(pos){
+        rotate(pos){
 
             let offset = 0;
 
@@ -254,7 +254,7 @@ function AOSInterface($el, props){
                 $el.style.WebkitTransform = 'rotate('+strength+')';
             }
         },
-        parallax: function(pos){
+        parallax(pos){
 
             let offset = 0;
 
@@ -302,7 +302,7 @@ function AOSInterface($el, props){
                 }
             }
         },
-        scroll: function(){
+        scroll(){
 
             let pos = 0;
 
@@ -392,7 +392,7 @@ function AOSInterface($el, props){
 
 let AOSComponent = {
     name :'on-scroll',
-    render: function(h) {
+    render(h) {
         if( this.active )
             return h(this.tag, {class:'on-scroll'}, this.$slots.default);
         else
@@ -413,12 +413,12 @@ let AOSComponent = {
         tablet: { default: 'active' },
         phone: { default: 'active' }
     },
-    data: function(){
+    data(){
         return{
             interface: null
         };
     },
-    mounted: function() {
+    mounted() {
 
         if( this.active ){
 
@@ -428,7 +428,7 @@ let AOSComponent = {
             this.$nextTick(this.interface.update);
         }
     },
-    destroyed: function() {
+    destroyed() {
 
         this.interface.destroyed();
     }
@@ -437,7 +437,7 @@ let AOSComponent = {
 
 let AOSDirective = {
     name :'on-scroll',
-    inserted: function(el, binding, vnode) {
+    mounted(el, binding, vnode) {
 
         let props = {
             animation: 'slide-up' ,
@@ -457,12 +457,13 @@ let AOSDirective = {
             props.animation = binding.value;
         else
             props = Object.assign(props, binding.value);
+
         el.classList.add('on-scroll');
 
         el.aos = new AOSInterface(el, props);
         el.aos.mounted();
     },
-    unbind: function(el, binding, vnode) {
+    unmounted(el, binding, vnode) {
         el.aos.destroyed();
     }
 };

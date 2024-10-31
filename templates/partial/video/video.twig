@@ -1,9 +1,3 @@
 <div class="p-video">
-	<a class="p-video__inner" v-youtube="'{{ props.video|youtube_id }}'">
-		{% if props.cover|default %}
-			{{ props.cover|picture(1280, 720) }}
-		{% else %}
-			<img src="https://img.youtube.com/vi/{{ props.video|youtube_id }}/maxresdefault.jpg" v-error="'https://img.youtube.com/vi/{{ props.video|youtube_id }}/hqdefault.jpg'" alt="video thumbnail" loading="lazy" width="1280" height="720"/>
-		{% endif %}
-	</a>
+	<youtube id="{{ props.video|youtube_id }}" {% if props.cover|default %}cover="{{ props.cover|picture(1280, 720) }}"{% endif %}></youtube>
 </div>
