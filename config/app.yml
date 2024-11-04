@@ -123,6 +123,10 @@ wordpress:
       fields:
         gtm:
           type: text
+        piwik_account:
+          type: text
+        piwik_site_id:
+          type: text
     seo:
       fields:
         facebook_username:
@@ -372,7 +376,7 @@ wordpress:
       #  - 1
       #disable_for_blogs:
       #  - 2#
-      #has_options: true #add acf page option to post type menu
+      has_options: true #add acf page option to post type menu
       #capability_type: post
       #publicly_queryable: false
       ## options for archive page
