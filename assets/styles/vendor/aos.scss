@@ -2,7 +2,10 @@
 @use "sass:list";
 @use "sass:string";
 
-on-scroll, [v-on-scroll]{ visibility: hidden }
+on-scroll, [v-on-scroll]{
+	visibility: hidden;
+	.acf-block-preview &{ visibility: visible }
+}
 
 $aos-duration: 0.5s!default;
 $aos-delay: math.div($aos-duration,10)!default;

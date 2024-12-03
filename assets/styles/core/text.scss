@@ -1,4 +1,4 @@
-.is-front, .acf-block-preview{
+.is-root-container{
   color: $c-text;
   &, input, textarea, select, button{ font-family: $font-text; @extend %text-medium }
 }

@@ -19,94 +19,95 @@ body{
 
 .is-root-container{
   width: 100%; position: relative;
-  .container{
-    margin-left: auto; margin-right: auto; display: flex; flex-flow: column;
-    position: relative; width: calc( 100% - 8rem); max-width: $grid-container-w;
+}
+
+.container{
+  margin-left: auto; margin-right: auto; display: flex; flex-flow: column;
+  position: relative; width: calc( 100% - 8rem); max-width: $grid-container-w;
+  .container{ width: 100% }
+  &--empty{
+    text-align: center; padding-top: $space-section; position: static;
+    &:after{
+      content: ''; background-image: linear-gradient(45deg, #204575 25%, #ffffff 25%, #ffffff 50%, #204575 50%, #204575 75%, #ffffff 75%, #ffffff 100%);
+      background-size: 56.57px 56.57px; position: overlay(); opacity: 0.04;
+    }
+  }
+  &--large{
+    max-width: $grid-container-max;
     .container{ width: 100% }
-    &--empty{
-      text-align: center; padding-top: $space-section; position: static;
-      &:after{
-        content: ''; background-image: linear-gradient(45deg, #204575 25%, #ffffff 25%, #ffffff 50%, #204575 50%, #204575 75%, #ffffff 75%, #ffffff 100%);
-        background-size: 56.57px 56.57px; position: overlay(); opacity: 0.04;
-      }
-    }
-    &--large{
-      max-width: $grid-container-max;
-      .container{ width: 100% }
-    }
-    &--full{
-      max-width: none; width: 100%;
-    }
   }
-
-  main{
-    position: relative; width: 100%;
-    @media print { margin-top: 0 }
+  &--full{
+    max-width: none; width: 100%;
   }
+}
 
-  .sections{
-    width: 100%; padding-top: $header-h;
-    margin-left: auto; margin-right: auto;
-    min-height: calc(#{$app-init-h} - #{$header-h} - #{$footer-h});
+main{
+  position: relative; width: 100%;
+  @media print { margin-top: 0 }
+}
+
+.sections{
+  width: 100%; padding-top: $header-h;
+  margin-left: auto; margin-right: auto;
+  min-height: calc(#{$app-init-h} - #{$header-h} - #{$footer-h});
+}
+
+section{
+  margin-top: $space-section; position: relative;
+  :not(.acf-block-preview) > &:first-of-type{ margin-top: 0 }
+  &.has-background{
+    padding: $space-section 0;
+    &--theme{ background: $c-theme; color: $c-white }
   }
+}
 
-  section{
-    margin-top: $space-section; position: relative;
-    &:first-of-type{ margin-top: 0 }
-    &.has-background{
-      padding: $space-section 0;
-      &--theme{ background: $c-theme; color: $c-white }
-    }
+#next{ display: inline; height: 0 }
+
+#root{
+  min-height: calc($app-h - $admin-h); display: flex; flex-flow: column;
+}
+
+figure{
+  position: relative; display: block;
+  &.has-caption:after{
+    position: overlay(); background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 85%); content: '';
   }
+  figcaption{ position: absolute; left: 0; bottom: 0; width: 100%; padding: $space-s $space; color: $c-white; font-size: $font-s; z-index: 1 }
+}
 
-  #next{ display: inline; height: 0 }
-
-  #root{
-    min-height: calc($app-h - $admin-h); display: flex; flex-flow: column;
+dialog{
+  position: fixed; left: 0; top: $admin-h; width: 100%; height: 100%; z-index: 999; border: 0; margin: 0; padding: 0;
+  align-items: center; justify-content: center; background: none; display: flex;
+  &:after{
+    background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); content: ''; position: overlay();
+    transition: allow(opacity);
+    @media #{$to-phone} { backdrop-filter: none }
   }
-
-  figure{
-    position: relative; display: block;
-    &.has-caption:after{
-      position: overlay(); background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 85%); content: '';
-    }
-    figcaption{ position: absolute; left: 0; bottom: 0; width: 100%; padding: $space-s $space; color: $c-white; font-size: $font-s; z-index: 1 }
+  .p-form{ max-width: 600px }
+  .dialog-title{
+    @extend %title-main; font-weight: bold!important; margin-bottom: $space;
+    @media #{$to-phone} { margin-bottom: $space; border-bottom: 1px solid $c-border-input; padding-bottom: $space }
   }
-
-  dialog{
-    position: fixed; left: 0; top: $admin-h; width: 100%; height: 100%; z-index: 999; border: 0; margin: 0; padding: 0;
-    align-items: center; justify-content: center; background: none; display: flex;
-    &:after{
-      background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); content: ''; position: overlay();
-      transition: allow(opacity);
-      @media #{$to-phone} { backdrop-filter: none }
+  .dialog-button{
+    position: absolute; right: $space; top: $space; width: $space; height: $space; cursor: pointer; padding: 0;
+    @media #{$to-phone} { width: 24px; height: 24px }
+    &:after,&:before{
+      position: absolute; top: 50%; width: 100%; content: ''; border-bottom: 2px solid;
     }
-    .p-form{ max-width: 600px }
-    .dialog-title{
-      @extend %title-main; font-weight: bold!important; margin-bottom: $space;
-      @media #{$to-phone} { margin-bottom: $space; border-bottom: 1px solid $c-border-input; padding-bottom: $space }
-    }
-    .dialog-button{
-      position: absolute; right: $space; top: $space; width: $space; height: $space; cursor: pointer; padding: 0;
-      @media #{$to-phone} { width: 24px; height: 24px }
-      &:after,&:before{
-        position: absolute; top: 50%; width: 100%; content: ''; border-bottom: 2px solid;
-      }
-      &:after{ transform: rotate(45deg) }
-      &:before{ transform: rotate(-45deg) }
-    }
-    .container{
-      background: #fff; width: fit-content; padding: $space-xl $space-l; box-shadow: 0 0 15px rgba(0,0,0,0.1);
-      max-height: 90vh; overflow: auto; z-index: 1; overflow-scrolling: touch;
-      @media #{$to-phone} { width: 100%; padding: $space; height: 100%; max-height: none; box-shadow: none }
-    }
+    &:after{ transform: rotate(45deg) }
+    &:before{ transform: rotate(-45deg) }
   }
+  .container{
+    background: #fff; width: fit-content; padding: $space-xl $space-l; box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    max-height: 90vh; overflow: auto; z-index: 1; overflow-scrolling: touch;
+    @media #{$to-phone} { width: 100%; padding: $space; height: 100%; max-height: none; box-shadow: none }
+  }
+}
 
-  .image-placeholder{
-    background: $c-transparent; display: block; position: relative; aspect-ratio: 4/3;
-    &:after{
-      position: overlay(); content: ''; background: url("../../media/images/logo.svg") no-repeat center;
-      background-size: 50% auto; opacity: 0.2;
-    }
+.image-placeholder{
+  background: $c-transparent; display: block; position: relative; aspect-ratio: 4/3;
+  &:after{
+    position: overlay(); content: ''; background: url("../../media/images/logo.svg") no-repeat center;
+    background-size: 50% auto; opacity: 0.2;
   }
 }

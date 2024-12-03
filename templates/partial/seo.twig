@@ -8,18 +8,18 @@
 	{% set seo = archive.seo %}
 	{% set content = archive %}
 {% endif %}
-<title>{{ seo.title|default(wp_title) }}</title>
+<title>{{ seo.title|default(wp_title)|clean }}</title>
 <meta property="og:locale" content="{{ blog.language }}" />
 <meta property="og:type" content="website" />
-<meta property="og:title" content="{{ seo.title|default(content.title) }}" />
+<meta property="og:title" content="{{ seo.title|default(content.title)|clean }}" />
 {% if seo.description|default(content.excerpt) %}
-	<meta name="description" content="{{ seo.description|default(content.excerpt)|escape }}">
-	<meta property="og:description" content="{{ seo.description|default(content.excerpt)|escape }}" />
+	<meta name="description" content="{{ seo.description|default(content.excerpt)|clean }}">
+	<meta property="og:description" content="{{ seo.description|default(content.excerpt)|clean }}" />
 {% endif %}
 <meta property="og:url" content="{{ content.link }}" />
-<meta property="og:site_name" content="{{ site.name|escape }}" />
+<meta property="og:site_name" content="{{ site.name|clean }}" />
 {% if options.facebook_username %}
-	<meta property="article:publisher" content="https://www.facebook.com/{{ options.facebook_username|escape }}" />
+	<meta property="article:publisher" content="https://www.facebook.com/{{ options.facebook_username|clean }}" />
 {% endif %}
 {% if seo.image|default(content.thumbnail) %}
 	<meta property="og:image" content="{{ seo.image|default(content.thumbnail)|crop(1024,554) }}" />
@@ -31,5 +31,91 @@
 	<meta property="article:modified_time" content="{{ post.modified_date('c') }}" />
 {% endif %}
 {% if options.twitter_username %}
-	<meta name="twitter:site" content="@{{ options.twitter_username|replace({'@':''})|escape }}" />
+	<meta name="twitter:site" content="@{{ options.twitter_username|replace({'@':''})|clean }}" />
 {% endif %}
+
+<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@graph": [
+			{
+				"@type": "WebPage",
+				"@id": "{{ content.link }}",
+				"url": "{{ content.link }}",
+				"name": "{{ seo.title|default(wp_title)|clean }}",
+				"isPartOf": {
+					"@id": "{{ blog.url }}#website"
+				},
+	{% if seo.image|default(content.thumbnail) %}
+				"primaryImageOfPage": {
+					"@id": "{{ content.link }}#primaryimage"
+				},
+				"image": {
+					"@id": "{{ content.link }}#primaryimage"
+				},
+				"thumbnailUrl": "{{ seo.image|default(content.thumbnail)|crop(1024,554) }}",
+                {% endif %}
+                {% if post %}
+                "datePublished": "{{ post.date('c') }}",
+                "dateModified": "{{ post.modified_date('c') }}",
+                {% endif %}
+	"description": "{{ seo.description|default(content.excerpt)|clean }}",
+				"breadcrumb": {
+					"@id": "{{ content.link }}#breadcrumb"
+				},
+				"inLanguage": "{{ blog.language|replace({'_':'-'}) }}",
+				"potentialAction": [
+					{
+						"@type": "ReadAction",
+						"target": [
+							"{{ content.link }}"
+						]
+					}
+				]
+			},
+	{% if seo.image|default(content.thumbnail) %}{
+				"@type": "ImageObject",
+				"inLanguage": "{{ blog.language|replace({'_':'-'}) }}",
+				"@id": "{{ content.link }}#primaryimage",
+				"url": "{{ seo.image|default(content.thumbnail)|crop(1024,554) }}",
+				"contentUrl": "{{ seo.image|default(content.thumbnail)|crop(1024,554) }}",
+				"width": 1024,
+				"height": 554
+			},{% endif %}
+	{
+		"@type": "BreadcrumbList",
+		"@id": "{{ content.link }}#breadcrumb",
+				"itemListElement": [
+					{
+						"@type": "ListItem",
+						"position": 1,
+						"name": "Home",
+                        "item": "{{ blog.url }}"
+					}
+				]
+			},
+			{
+				"@type": "WebSite",
+				"@id": "{{  blog.url }}#website",
+				"url": "{{  blog.url }}",
+				"name": "{{ blog.name|clean }}",
+				"description": "{{ blog.description|clean }}",
+				"potentialAction": [
+					{
+						"@type": "SearchAction",
+						"target": {
+							"@type": "EntryPoint",
+							"urlTemplate": "{{ blog.url }}?s={search_term_string}"
+						},
+						"query-input": {
+							"@type": "PropertyValueSpecification",
+							"valueRequired": true,
+							"valueName": "search_term_string"
+						}
+					}
+				],
+				"inLanguage": "{{ blog.language|replace({'_':'-'}) }}"
+			}
+		]
+	}
+</script>

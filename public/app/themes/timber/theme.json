@@ -1,0 +1,101 @@
+{
+  "$schema": "https://schemas.wp.org/wp/6.7/theme.json",
+  "version": 3,
+  "settings": {
+    "appearanceTools": false,
+    "background": {
+      "backgroundImage": false,
+      "backgroundSize": false
+    },
+    "border": {
+      "color": false,
+      "radius": false,
+      "style": false,
+      "width": false
+    },
+    "color": {
+      "text": false,
+      "background": false,
+      "link": false,
+      "heading": false,
+      "button": false,
+      "caption": false,
+      "custom": false,
+      "customDuotone": false,
+      "customGradient": false,
+      "defaultDuotone": false,
+      "defaultGradients": false,
+      "defaultPalette": false,
+      "duotone": [],
+      "gradients": [],
+      "palette": []
+    },
+    "dimensions": {
+      "defaultAspectRatios": false,
+      "aspectRatios": [],
+      "minHeight": false
+    },
+    "layout": {
+      "contentSize": "",
+      "wideSize": "",
+      "allowEditing": false,
+      "allowCustomContentAndWideSize":false
+    },
+    "position": {
+      "sticky": false
+    },
+    "spacing": {
+      "blockGap": null,
+      "margin": false,
+      "padding": false,
+      "customSpacingSize": false,
+      "defaultSpacingSizes": false
+    },
+    "shadow": {
+      "defaultPresets": false,
+      "presets": []
+    },
+    "typography": {
+      "customFontSize": false,
+      "dropCap": false,
+      "fontStyle": false,
+      "fontWeight": false,
+      "fluid": false,
+      "letterSpacing": false,
+      "lineHeight": false,
+      "textDecoration": false,
+      "textTransform": false,
+      "writingMode": false,
+      "fontSizes": [],
+      "fontFamilies": []
+    },
+    "useRootPaddingAwareAlignments": false
+  },
+  "styles": {
+    "elements": {
+      "button": {
+        "color": {
+          "text": "",
+          "background": ""
+        },
+        "spacing": {
+          "padding": ""
+        },
+        "typography": {
+          "fontSize": "",
+          "fontFamily": "",
+          "lineHeight": "",
+          "textDecoration": ""
+        },
+        "border": {
+          "width": "0"
+        }
+      },
+      "link": {
+        "typography": {
+          "textDecoration": ""
+        }
+      }
+    }
+  }
+}

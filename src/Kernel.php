@@ -10,12 +10,14 @@ use Timber\Image;
 use Timber\ImageHelper;
 use Timber\Timber;
 use Timber\URLHelper;
+use Twig\Runtime\EscaperRuntime;
 
 abstract class Kernel extends \Timber\Site {
 
     private $entrypoints;
     private $manifest;
     private $translations;
+    private $version=1.1;
 
     private $options;
 
@@ -52,8 +54,7 @@ abstract class Kernel extends \Timber\Site {
         if( file_exists(__DIR__.'/../public/build/manifest.json'))
             $this->manifest = json_decode(file_get_contents(__DIR__.'/../public/build/manifest.json'), true);
 
-        if( is_admin() )
-            add_action('enqueue_block_editor_assets', [$this, 'enqueueBlockEditorAssets']);
+        add_filter('block_editor_settings_theme_css', [$this, 'block_editor_settings_theme_css']);
 
         parent::__construct();
     }
@@ -135,21 +136,19 @@ abstract class Kernel extends \Timber\Site {
     }
 
     /**
-     * @return void
+     * @return string
      */
-    function enqueueBlockEditorAssets() {
+    function block_editor_settings_theme_css() {
 
-        if ( in_array($_SERVER['REMOTE_ADDR'], array('127.0.0.1', '::1')) ){
+        $path = $this->manifest['build/bundle.css']??'';
 
-            wp_enqueue_style('block_editor_style','http://localhost:8080/build/bundle.css');
-        }
-        elseif( $path = $this->manifest['build/bundle.css']??false ){
+        if( str_starts_with($path, 'http') )
+            return $path;
 
-            if( is_multisite() )
-                wp_enqueue_style('block_editor_style', network_home_url($path));
-            else
-                wp_enqueue_style('block_editor_style', home_url($path));
-        }
+        if( is_multisite() )
+            return network_home_url($path);
+        else
+            return home_url($path);
     }
 
     /**
@@ -432,6 +431,8 @@ abstract class Kernel extends \Timber\Site {
             $post_id = $image['ID']??false;
         elseif( is_int($image) )
             $post_id = $image;
+        elseif( is_string($image) )
+            $image = ['url'=>$image];
 
         if( $post_id ){
 
@@ -446,7 +447,7 @@ abstract class Kernel extends \Timber\Site {
 
                 $attachment = get_post( $post_id );
 
-                $image = wp_get_attachment_url( $attachment->ID );
+                $image = ['url'=>wp_get_attachment_url( $attachment->ID )];
             }
         }
 
@@ -722,6 +723,21 @@ abstract class Kernel extends \Timber\Site {
     public function formatPhone($text)
     {
         return chunk_split($text, 2, ' ');
+    }
+
+    /**
+     * @return string
+     * @throws \Twig\Error\RuntimeError
+     */
+    public function clean($text)
+    {
+        if( !is_string($text) )
+            return "";
+
+        $text = trim(strip_tags(str_replace("\n"," ", str_replace("\r"," ", str_replace("\n\n"," ", $text)))));
+        $escaper = new EscaperRuntime();
+
+        return $escaper->escape($text);
     }
 
     /**
@@ -1166,6 +1182,7 @@ abstract class Kernel extends \Timber\Site {
         $twig->addFunction( new Twig\TwigFunction( 'calculated_carbon', 'get_calculated_carbon' ) );
         $twig->addFunction( new Twig\TwigFunction( 'is_front_page',  'is_front_page' ) );
         $twig->addFunction( new Twig\TwigFunction( 'is_404',  'is_404' ) );
+        $twig->addFunction( new Twig\TwigFunction( 'is_privacy_policy',  'is_privacy_policy' ) );
         $twig->addFunction( new Twig\TwigFunction( 'archive_post_type',  [$this, 'getArchivePostType'] ) );
         $twig->addFunction( new Twig\TwigFunction( 'is_archive',  'is_archive' ) );
         $twig->addFunction( new Twig\TwigFunction( 'is_sticky',  'is_sticky' ) );
@@ -1200,6 +1217,7 @@ abstract class Kernel extends \Timber\Site {
         $twig->addFilter( new Twig\TwigFilter( 'phone', [$this,'formatPhone'] ) );
         $twig->addFilter( new Twig\TwigFilter( 'youtube_id', [$this, 'youtubeId'] ) );
         $twig->addFilter( new Twig\TwigFilter( 'vimeo_id', [$this, 'vimeoID'] ) );
+        $twig->addFilter( new Twig\TwigFilter( 'clean', [$this, 'clean'] ) );
 
         return $twig;
     }
