@@ -1,10 +1,10 @@
-.block-editor-iframe__body{
-  .edit-post-visual-editor__post-title-wrapper{
-    display: none;
-  }
-  &:after{ height: $space-s!important;}
+.block-editor-iframe{
+  &__html{ transition: none!important }
+  &__body:after{ height: $space-s!important }
 }
 
-.is-mobile-preview{ border: 0!important; border-radius: 8px!important; }
+.edit-post-visual-editor__post-title-wrapper{
+  margin: 0 !important; padding: 20px; font-size: 30px; border-bottom: 1px solid #ddd;
+}
 
 #wpadminbar { position: fixed!important; }
