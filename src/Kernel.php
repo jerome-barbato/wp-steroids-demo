@@ -3,6 +3,7 @@
 /**
  * Shared code across projects, defines default behaviour for WordPress
  * Add most used twig functions and filters
+ * v1.1
  */
 
 use Timber\Factory\PostFactory;
@@ -17,7 +18,6 @@ abstract class Kernel extends \Timber\Site {
     private $entrypoints;
     private $manifest;
     private $translations;
-    private $version=1.1;
 
     private $options;
 
@@ -314,7 +314,13 @@ abstract class Kernel extends \Timber\Site {
         if( $version )
             $url .= (strpos($url, '?' ) !== false ? '&v=' : '?v=' ).$version;
 
-        return $url;
+        if( str_starts_with($url, 'http') )
+            return $url;
+
+        if( is_multisite() )
+            return network_home_url($url);
+        else
+            return home_url($url);
     }
 
     /**

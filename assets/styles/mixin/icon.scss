@@ -1,7 +1,5 @@
 @use "sass:list";
 
-//include icon
-$icons: false !default;
 
 @mixin icon($name, $position:'before') {
 
@@ -13,21 +11,18 @@ $icons: false !default;
   }
 }
 
-@if($icons){
+%icon{
+  font-family: fontello, sans-serif; text-transform: none; line-height: 1; font-size: $font-m;
+  font-style: normal; font-weight: normal; font-variant: normal; vertical-align: middle;
+  -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+}
 
-  %icon{
-    font-family: fontello, sans-serif; text-transform: none; line-height: 1; font-size: $font-m;
-    font-style: normal; font-weight: normal; font-variant: normal; vertical-align: middle;
-    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
-  }
+@each $icon in $icons {
 
-  @each $icon in $icons {
+  $id      : list.nth($icon, 1);
+  $content : list.nth($icon, 2);
 
-    $id      : list.nth($icon, 1);
-    $content : list.nth($icon, 2);
-
-    %icon-#{$id}{ content: $content }
-  }
+  %icon-#{$id}{ content: $content }
 }
 
 [data-icon]:not(.dashicons):before, [data-icon_after]:after,
