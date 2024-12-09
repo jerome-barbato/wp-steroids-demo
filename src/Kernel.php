@@ -3,7 +3,7 @@
 /**
  * Shared code across projects, defines default behaviour for WordPress
  * Add most used twig functions and filters
- * v1.1
+ * v1.2
  */
 
 use Timber\Factory\PostFactory;
