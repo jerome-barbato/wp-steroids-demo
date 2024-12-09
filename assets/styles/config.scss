@@ -1,17 +1,10 @@
-// Paths
-$font-path : '/assets/media/fonts';
+@use "sass:math";
+
+@forward "/assets/styles/libs/functions";
+@forward "/assets/styles/libs/mixins";
 
 
-// Transition
-$transition-duration : 0.3s;
-
-
-// Animations
-$animation-duration   : 0.6s;
-$animation-offset     : 100%;
-$animation-offset-rem : 4rem;
-
-//theme
+// Theme
 $color-background : #FFF;
 $color-theme : #001733;
 $color-theme-alt : #F2F0F0;
@@ -29,32 +22,6 @@ $c-placeholder-color: var(--c-placeholder-color);
 $c-transparent: var(--c-transparent);
 $c-image-placeholder: rgba(0,0,0,0.05);
 
-:root{
-  --c-background: #{$color-background};
-  --c-text: #111;
-  --c-theme: #{$color-theme};
-  --c-theme-alt: #{$color-theme-alt};
-  --c-black: #111;
-  --c-white: #fff;
-  --header-h: 9rem;
-  --app-height: 100vh;
-  --app-init-height: 100vh;
-  --admin-h: 0px;
-  --footer-h: 22.5rem;
-  --c-border: rgba(0,0,0,0.2) ;
-  --c-border-input: #bdcde1;
-  --c-transparent: rgba(255,255,255,0.3) ;
-  --c-placeholder-color: #93B1D9;
-  --space-xl: 6rem;
-  --space-xxl: 8rem;
-  --space-xxxl: 10rem;
-  --space-section: 12rem;
-  --padding-section: 4rem;
-  --grid-gap: 8rem;
-  --grid-container-w: 114rem;
-  --font-title: 'inter', arial, serif;
-  --font-text: 'inter', arial, sans-serif;
-}
 
 // Sizes
 $app-h : var(--app-height);
@@ -140,3 +107,127 @@ $grid-container-w: var(--grid-container-w);
 $grid-size: 122rem;
 $grip-columns: 12;
 $grip-gap: var(--grid-gap);
+
+// Animations
+
+$animation-duration     : 0.6s;
+$animation-offset       : 100%;
+$animation-offset-rem   : 4rem;
+$animation-delay        : math.div($animation-duration,10);
+$animation-delay-values : 35;
+$animation-reveal-color : #eee;
+
+// Transitions
+
+$transition-duration : 0.3s;
+$transition-delay : math.div($transition-duration,6);
+
+$speed-very-fast : math.div($transition-duration,2);
+$speed-fast      : $transition-duration;
+$speed-slow      : $transition-duration*2;
+$speed-very-slow : $transition-duration*4;
+
+// Easing
+
+$linear            : cubic-bezier(0.250, 0.250, 0.750, 0.750);
+$ease-soft         : cubic-bezier(.104,.204,.492,1);
+$ease-in           : cubic-bezier(0.420, 0.000, 1.000, 1.000);
+$ease-out          : cubic-bezier(0.000, 0.000, 0.580, 1.000);
+$ease-in-out       : cubic-bezier(0.420, 0.000, 0.580, 1.000);
+$ease-in-out-expo  : cubic-bezier(0.19, 1, 0.22, 1);
+
+$ease-in-quad      : cubic-bezier(0.550, 0.085, 0.680, 0.530);
+$ease-in-cubic     : cubic-bezier(0.550, 0.055, 0.675, 0.190);
+$ease-in-quart     : cubic-bezier(0.895, 0.030, 0.685, 0.220);
+$ease-in-quint     : cubic-bezier(0.755, 0.050, 0.855, 0.060);
+$ease-in-sine      : cubic-bezier(0.470, 0.000, 0.745, 0.715);
+$ease-in-expo      : cubic-bezier(0.950, 0.050, 0.795, 0.035);
+$ease-in-circ      : cubic-bezier(0.600, 0.040, 0.980, 0.335);
+$ease-in-back      : cubic-bezier(0.600, -0.280, 0.735, 0.045);
+
+$ease-out-quad     : cubic-bezier(0.250, 0.460, 0.450, 0.940);
+$ease-out-cubic    : cubic-bezier(0.215, 0.610, 0.355, 1.000);
+$ease-out-quart    : cubic-bezier(0.165, 0.840, 0.440, 1.000);
+$ease-out-quint    : cubic-bezier(0.230, 1.000, 0.320, 1.000);
+$ease-out-sine     : cubic-bezier(0.390, 0.575, 0.565, 1.000);
+$ease-out-expo     : cubic-bezier(0.190, 1.000, 0.220, 1.000);
+$ease-out-circ     : cubic-bezier(0.075, 0.820, 0.165, 1.000);
+$ease-out-back     : cubic-bezier(0.175, 0.885, 0.320, 1.275);
+
+$ease-in-out-quad  : cubic-bezier(0.455, 0.030, 0.515, 0.955);
+$ease-in-out-cubic : cubic-bezier(0.645, 0.045, 0.355, 1.000);
+$ease-in-out-quart : cubic-bezier(0.770, 0.000, 0.175, 1.000);
+$ease-in-out-quint : cubic-bezier(0.860, 0.000, 0.070, 1.000);
+$ease-in-out-sine  : cubic-bezier(0.445, 0.050, 0.550, 0.950);
+$ease-in-out-expo  : cubic-bezier(1.000, 0.000, 0.000, 1.000);
+$ease-in-out-circ  : cubic-bezier(0.785, 0.135, 0.150, 0.860);
+$ease-in-out-back  : cubic-bezier(0.680, -0.550, 0.265, 1.550);
+
+$easings : in $ease-in, out $ease-out, in-out $ease-in-out, in-quad $ease-in-quad, in-cubic $ease-in-cubic, in-quart $ease-in-quart, in-quint $ease-in-quint, in-sine $ease-in-sine, in-expo $ease-in-expo, in-circ $ease-in-circ, in-back $ease-in-back, out-quad $ease-out-quad, out-cubic $ease-out-cubic, out-quart $ease-out-quart, out-quint $ease-out-quint, out-sine $ease-out-sine, out-expo $ease-out-expo, out-circ $ease-out-circ, out-back $ease-out-back, in-out-quad $ease-in-out-quad, in-out-cubic $ease-in-out-cubic, in-out-quart $ease-in-out-quart, in-out-quint $ease-in-out-quint, in-out-sine $ease-in-out-sine, in-out-expo $ease-in-out-expo, in-out-circ $ease-in-out-circ, in-out-back $ease-in-out-back;
+
+// Media queries
+
+// Default Screen sizes, following Chrome devtools specification
+$media                  : 'screen' !default;
+
+$screen-phone           : 480px !default;
+$screen-phone-m         : 375px !default;
+$screen-phone-s         : 320px !default;
+$screen-tablet          : 980px !default;
+$screen-small           : 1280px !default;
+$screen-large           : 1440px !default;
+$screen-4k              : 1920px !default;
+
+// From [value] to infinity
+$from-4k               : $media+" and (min-width: "+($screen-4k)+")";
+$from-large            : $media+" and (min-width: "+($screen-large)+")";
+$from-small            : $media+" and (min-width: "+($screen-small)+")";
+$from-tablet           : $media+" and (min-width: "+($screen-tablet)+")";
+$from-phone            : $media+" and (min-width: "+($screen-phone)+")";
+$from-phone-m          : $media+" and (min-width: "+($screen-phone-m)+")";
+$from-phone-s          : $media+" and (min-width: "+($screen-phone-s)+")";
+
+// From 0 to [value]
+$to-large              : $media+" and (max-width: "+($screen-large)+")";
+$to-small              : $media+" and (max-width: "+($screen-small)+")";
+$to-tablet             : $media+" and (max-width: "+($screen-tablet)+")";
+$to-phone              : $media+" and (max-width: "+($screen-phone)+")";
+$to-phone-m            : $media+" and (max-width: "+($screen-phone-m)+")";
+$to-phone-s            : $media+" and (max-width: "+($screen-phone-s)+")";
+
+// [value] only
+$only-4k               : $from-4k;
+$only-large            : $media+" and (min-width: "+$screen-large+") and (max-width: "+($screen-4k - 1px)+")";
+$only-small            : $media+" and (min-width: "+$screen-small+") and (max-width: "+($screen-large - 1px)+")";
+$only-tablet           : $media+" and (min-width: "+$screen-tablet+") and (max-width: "+($screen-small - 1px)+")";
+$only-phone            : $media+" and (min-width: "+$screen-phone+") and (max-width: "+($screen-tablet - 1px)+")";
+$only-phone-m          : $media+" and (min-width: "+$screen-phone-m+") and (max-width: "+($screen-phone - 1px)+")";
+$only-phone-s          : $to-phone-s;
+
+// Specific
+$retina           : "(-webkit-min-device-pixel-ratio: 2),(min-resolution: 192dpi)";
+
+
+// Media query list to be used in other libraries
+$media-queries-to   : ( large: $to-large, small: $to-small, tablet: $to-tablet, phone: $to-phone, phone-m: $to-phone-m, phone-s: $to-phone-s);
+$media-queries-from : ( 4k: $from-4k, large: $from-large, small: $from-small, tablet: $from-tablet, phone: $from-phone, phone-m: $from-phone-m, phone-s: $from-phone-s);
+
+
+// Social colors
+
+$color-dribbble   : #ea4c89;
+$color-facebook   : #3b5998;
+$color-flickr     : #ff0084;
+$color-googleplus : #dd4b39;
+$color-instagram  : #d35400;
+$color-linkedin   : #007bb6;
+$color-pinterest  : #cb2027;
+$color-tumblr     : #32506d;
+$color-twitter    : #00aced;
+$color-vimeo      : #1ab7ea;
+$color-vine       : #00bf8f;
+$color-youtube    : #bb0000;
+
+// Paths
+
+$font-path : '/assets/media/fonts';

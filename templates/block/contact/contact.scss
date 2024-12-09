@@ -1,3 +1,5 @@
+@use "/assets/styles/config" as *;
+
 .b-contact{
     .wpcf7-form{
       *+p,*+div{ margin-top: $space }

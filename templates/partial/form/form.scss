@@ -1,3 +1,7 @@
+@use "/assets/styles/config" as *;
+@use "/assets/styles/core/icons" as *;
+
+
 .p-form{
   width: 100%;
   &, &__step{
@@ -42,7 +46,7 @@
       height: 60px; padding: 0 $space; width: 100%; background: $c-theme no-repeat center; color: $c-black; border: 1px solid $c-theme;
       text-transform: uppercase; transition: allow(background border);
       &.is-loading{
-        pointer-events: none; background-image:url('../../../assets/media/images/loader-black.svg'); color: transparent;
+        pointer-events: none; background-image:url('/assets/media/images/loader-black.svg'); color: transparent;
       }
       &.is-valid{
         pointer-events: none; background: #c2fd10; border-color: #c2fd10;

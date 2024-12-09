@@ -13,11 +13,8 @@
 
 'use strict';
 
-import 'regenerator-runtime/runtime'
-
 // load browser detection
 import Bowser from "bowser";
-const browser = Bowser.getParser(window.navigator.userAgent);
 
 // load Vuejs
 import { createApp } from 'vue'
@@ -157,12 +154,14 @@ const app = createApp({
             document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`);
 
             this.heights.footer = this.$refs.footer ? this.$refs.footer.clientHeight : 0;
-            this.heights.header = this.$refs.header.clientHeight;
+            this.heights.header = this.$refs.header ? this.$refs.header.clientHeight : 0;
         },
         handleHash(){
 
         },
         addBrowserClasses(){
+
+            const browser = Bowser.getParser(window.navigator.userAgent);
 
             if( !browser.satisfies({"internet explorer": ">11", safari: '>=13', chrome: ">=85", firefox: ">=83", edge: ">=84"}) ){
 
@@ -209,16 +208,9 @@ app.directive('split', split);
 import { register } from 'swiper/element/bundle';
 register();
 
-// load blocks
-let blocks = require.context("../../templates", true, /^\.\/[^.]+\.js$/);
-blocks.keys().forEach(fileName => {
-
-    const blockConfig = blocks(fileName)
-    const blockName = blockConfig.default.name || fileName.split('/').pop().replace(/\.\w+$/, '')
-
-    //create global block
-    app.component(blockName, blockConfig.default || blockConfig)
-});
+// Wait for all components to be loaded
+import loadComponents from './blocks.js';
+loadComponents(app);
 
 // load plugins
 import VueAOS from './plugins/aos';

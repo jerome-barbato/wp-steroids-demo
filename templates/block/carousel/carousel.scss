@@ -1,3 +1,6 @@
+@use "/assets/styles/config" as *;
+@use "/assets/styles/layout/text" as *;
+
 .b-carousel{
   .container{ grid-gap: $space-l }
   &__title{ @extend %text-hero; text-align: center }

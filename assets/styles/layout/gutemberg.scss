@@ -1,3 +1,5 @@
+@use "../config" as *;
+
 .block-editor-iframe{
   &__html{ transition: none!important }
   &__body:after{ height: $space-s!important }

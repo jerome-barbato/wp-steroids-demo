@@ -2,6 +2,8 @@
 @use "sass:map";
 @use "sass:string";
 
+@use "../config" as *;
+
 $font-families : ()!default;
 $font-woof2 : true!default;
 $font-woof  : false!default;

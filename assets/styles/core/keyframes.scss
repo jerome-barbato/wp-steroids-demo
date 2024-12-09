@@ -1,7 +1,4 @@
-//v1.0
-
-$animation-offset-rem: 10rem !default;
-$animation-offset: 100% !default;
+@use "../config" as *;
 
 @keyframes placeholder { 0%{ opacity: 1 } 100%{ opacity: 1 } }
 @keyframes fade-in { 0%{ opacity: 0 } 100%{ opacity: 1 } }

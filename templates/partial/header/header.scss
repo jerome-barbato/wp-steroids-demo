@@ -1,3 +1,5 @@
+@use "/assets/styles/config" as *;
+
 .p-header{
   position: absolute; top: 0; left: 0; width: 100%; z-index: 99; height: $header-h; background: $color-theme-alt; border-bottom: 1px solid $c-border;
   .has-scrolled--up &{ position: fixed; top:$admin-h; animation: slide-from-top $animation-duration $ease-out-cubic both }
@@ -14,7 +16,7 @@
   &__logo{
     font-size: 0; color: transparent; display: block; max-width: 50vw; position: relative; height: 100%; width: 6rem;
     &:after{
-      position: overlay(); background: url('../../../assets/media/images/logo.svg') no-repeat center; background-size: contain;
+      position: overlay(); background: url('/assets/media/images/logo.svg') no-repeat center; background-size: contain;
       content: ''; transition: allow(opacity);
     }
   }

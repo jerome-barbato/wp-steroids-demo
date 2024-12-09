@@ -1,3 +1,5 @@
+@use "../config" as *;
+
 .is-root-container{
   color: $c-text;
   &, input, textarea, select, button{ font-family: $font-text; @extend %text-medium }
@@ -8,50 +10,6 @@ html{
   @media #{$to-phone} { font-size: 10px }
   @media print { font-size: 7px!important }
 }
-
-.title-hero, %title-hero{
-  font-family:$font-title; font-weight:500; font-size: $font-xxxl; line-height: 1.1; letter-spacing: -0.01em;
-  @media #{$to-phone} {
-    font-size: $font-ll; word-break: break-word;
-  }
-}
-
-.title-section, %title-section{
-  font-family:$font-title; font-weight:500; font-size: $font-xxl; line-height: 1.1; letter-spacing: -0.01em;
-  @media #{$to-phone} {
-    font-size: $font-ll;
-  }
-}
-
-.title-main, %title-main{
-  font-family:$font-title; font-weight:500; font-size: $font-xl; line-height: 1.1; letter-spacing: -0.01em;
-  @media #{$to-phone} {
-    font-size: $font-ll;
-  }
-}
-
-.title-large, %title-large{
-  font-family:$font-title; font-weight:500; font-size: $font-ll; line-height: 1.1; letter-spacing: -0.01em;
-  @media #{$to-phone} {
-    font-size: $font-l;
-  }
-}
-
-
-.text-hero, %text-hero{
-  font-size: 20px; font-size: max(20px, $font-l); line-height: 1.4; letter-spacing: 0;
-  @media #{$to-phone} {
-    font-size: $font-ml;
-  }
-}
-.text-medium, %text-medium{
-  font-weight:400; font-size: $font-m; line-height: 1.5; letter-spacing: 0;
-  @media screen and (min-width: 768px) and (max-width:1280px) {
-    font-size: 15px;
-  }
-}
-.text-small, %text-small{ font-weight:400; font-size: $font-xs; line-height: 1.2; letter-spacing: 0; text-transform: uppercase }
-
 
 .wysiwyg{
   h1{ @extend %title-main }
@@ -110,3 +68,47 @@ html{
   sup{ line-height: 1; font-size: 70% }
   sub{ line-height: 1; font-size: 70% }
 }
+
+%title-hero{
+  font-family:$font-title; font-weight:500; font-size: $font-xxxl; line-height: 1.1; letter-spacing: -0.01em;
+  @media #{$to-phone} {
+    font-size: $font-ll; word-break: break-word;
+  }
+}
+
+%title-section{
+  font-family:$font-title; font-weight:500; font-size: $font-xxl; line-height: 1.1; letter-spacing: -0.01em;
+  @media #{$to-phone} {
+    font-size: $font-ll;
+  }
+}
+
+%title-main{
+  font-family:$font-title; font-weight:500; font-size: $font-xl; line-height: 1.1; letter-spacing: -0.01em;
+  @media #{$to-phone} {
+    font-size: $font-ll;
+  }
+}
+
+%title-large{
+  font-family:$font-title; font-weight:500; font-size: $font-ll; line-height: 1.1; letter-spacing: -0.01em;
+  @media #{$to-phone} {
+    font-size: $font-l;
+  }
+}
+
+%text-hero{
+  font-size: 20px; font-size: max(20px, $font-l); line-height: 1.4; letter-spacing: 0;
+  @media #{$to-phone} {
+    font-size: $font-ml;
+  }
+}
+
+%text-medium{
+  font-weight:400; font-size: $font-m; line-height: 1.5; letter-spacing: 0;
+  @media screen and (min-width: 768px) and (max-width:1280px) {
+    font-size: 15px;
+  }
+}
+
+%text-small{ font-weight:400; font-size: $font-xs; line-height: 1.2; letter-spacing: 0; text-transform: uppercase }

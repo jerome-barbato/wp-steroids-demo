@@ -1,3 +1,5 @@
+@use "/assets/styles/config" as *;
+
 .p-cta{
   background: $c-theme; padding: $space-s $space-l; color: $c-white;
 }

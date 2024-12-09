@@ -1,3 +1,5 @@
+@use "/assets/styles/config" as *;
+
 .p-menu{
   &__items{
     display: flex; grid-gap: $space;

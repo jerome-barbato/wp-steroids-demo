@@ -1,3 +1,6 @@
+@use "/assets/styles/config" as *;
+@use "/assets/styles/layout/text" as *;
+
 .b-hero{
   background: $c-theme-alt; padding: $space-section 0; margin-top: 0;
   .container{ align-items: center; grid-gap: $space }

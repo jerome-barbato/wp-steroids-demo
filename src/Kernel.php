@@ -15,7 +15,6 @@ use Twig\Runtime\EscaperRuntime;
 
 abstract class Kernel extends \Timber\Site {
 
-    private $entrypoints;
     private $manifest;
     private $translations;
 
@@ -48,11 +47,8 @@ abstract class Kernel extends \Timber\Site {
         add_filter( 'timber/twig', [$this, 'addToTwig'] );
         add_filter( 'block_render_callback', [$this, 'renderBlock']);
 
-        if( file_exists(__DIR__.'/../public/build/entrypoints.json'))
-            $this->entrypoints = json_decode(file_get_contents(__DIR__.'/../public/build/entrypoints.json'), true);
-
-        if( file_exists(__DIR__.'/../public/build/manifest.json'))
-            $this->manifest = json_decode(file_get_contents(__DIR__.'/../public/build/manifest.json'), true);
+        if( file_exists(__DIR__.'/../public/build/.vite/manifest.json'))
+            $this->manifest = json_decode(file_get_contents(__DIR__.'/../public/build/.vite/manifest.json'), true);
 
         add_filter('block_editor_settings_theme_css', [$this, 'block_editor_settings_theme_css']);
 
@@ -94,7 +90,7 @@ abstract class Kernel extends \Timber\Site {
      */
     public function optionSiteURL($url)
     {
-        return strpos($url, '/edition') === false ? $url.'/edition' : $url;
+        return !str_contains($url, '/edition') ? $url.'/edition' : $url;
     }
 
     /**
@@ -103,7 +99,7 @@ abstract class Kernel extends \Timber\Site {
      */
     public function networkSiteURL($url)
     {
-        if( strpos($url, '/edition') === false )
+        if(!str_contains($url, '/edition'))
         {
             $url = str_replace('/wp-login', '/edition/wp-login', $url);
             return str_replace('/wp-admin', '/edition/wp-admin', $url);
@@ -140,7 +136,17 @@ abstract class Kernel extends \Timber\Site {
      */
     function block_editor_settings_theme_css() {
 
-        $path = $this->manifest['build/bundle.css']??'';
+        $entry = $this->manifest["assets/styles/app.scss"]['file']??false;
+
+        if( !$entry ){
+
+            if( WP_DEBUG )
+                return "http://localhost:8080/build/assets/styles/app.scss";
+            else
+                return '';
+        }
+
+        $path = '/build/'.$entry;
 
         if( str_starts_with($path, 'http') )
             return $path;
@@ -273,32 +279,34 @@ abstract class Kernel extends \Timber\Site {
      * @param $entryName
      * @return string
      */
-    public function renderWebpackLinkTags($entryName ) {
+    public function renderLinkTags($entryName) {
 
-        $entries = $this->entrypoints['entrypoints'][$entryName]['css']??[];
+        $entry = $this->manifest["assets/styles/".$entryName.".scss"]['file']??false;
 
-        $styles = '';
+        if( empty($entry) ){
 
-        foreach ($entries as $entry)
-            $styles .= "<link rel='stylesheet' href='{$entry}' type='text/css' media='all' />";
+            if( WP_DEBUG )
+                return "<link rel='stylesheet' href='http://localhost:8080/build/assets/styles/{$entryName}.scss' type='text/css' media='all' />";
+            else
+                return '';
+        }
 
-        return $styles;
+        return "<link rel='stylesheet' href='/build/{$entry}' type='text/css' media='all' />";
     }
 
     /**
      * @param $entryName
      * @return string
      */
-    public function renderWebpackScriptTags($entryName ) {
+    public function renderScriptTags($entryName ) {
 
-        $entries = $this->entrypoints['entrypoints'][$entryName]['js']??[];
+        $entry = $this->manifest["assets/scripts/".$entryName.".js"]['file']??false;
 
-        $styles = '';
+        if( !$entry && WP_DEBUG)
+            return "<script type='module' src='http://localhost:8080/build/@vite/client'></script>".
+                   "<script type='module' src='http://localhost:8080/build/assets/scripts/{$entryName}.js'></script>";
 
-        foreach ($entries as $entry)
-            $styles .= "<script type='text/javascript' src='{$entry}' defer></script>";
-
-        return $styles;
+        return "<script type='text/javascript' src='/build/{$entry}' defer></script>";
     }
 
     /**
@@ -308,14 +316,16 @@ abstract class Kernel extends \Timber\Site {
      */
     public function asset($entryName, $version=0) {
 
-        $url = $this->manifest['build/'.$entryName]??false;
-        $url = $url?:'/static/' . $entryName;
+        if( str_starts_with($entryName, 'http') )
+            return $entryName;
+
+        $url = '/static/' . $entryName;
+
+        if( !file_exists(__DIR__.'/../public'.$url) )
+            return '';
 
         if( $version )
-            $url .= (strpos($url, '?' ) !== false ? '&v=' : '?v=' ).$version;
-
-        if( str_starts_with($url, 'http') )
-            return $url;
+            $url .= (str_contains($url, '?') ? '&v=' : '?v=' ).$version;
 
         if( is_multisite() )
             return network_home_url($url);
@@ -1173,8 +1183,8 @@ abstract class Kernel extends \Timber\Site {
 
         $twig->addExtension( new Twig\Extension\StringLoaderExtension() );
 
-        $twig->addFunction( new Twig\TwigFunction( 'encore_entry_link_tags', [$this, 'renderWebpackLinkTags'] ) );
-        $twig->addFunction( new Twig\TwigFunction( 'encore_entry_script_tags', [$this, 'renderWebpackScriptTags'] ) );
+        $twig->addFunction( new Twig\TwigFunction( 'vite_entry_link_tags', [$this, 'renderLinkTags'] ) );
+        $twig->addFunction( new Twig\TwigFunction( 'vite_entry_script_tags', [$this, 'renderScriptTags'] ) );
         $twig->addFunction( new Twig\TwigFunction( 'enqueue_contact_form_scripts', [$this, 'enqueue_contact_form_scripts'] ) );
         $twig->addFunction( new Twig\TwigFunction( 'asset', [$this, 'asset'] ) );
         $twig->addFunction( new Twig\TwigFunction( 'nonce', [$this, 'nonce'] ) );

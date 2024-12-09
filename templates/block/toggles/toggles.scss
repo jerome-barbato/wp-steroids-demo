@@ -1,3 +1,6 @@
+@use "/assets/styles/config" as *;
+@use "/assets/styles/layout/text" as *;
+
 .b-toggles{
   .c-dropdown{
     &__toggle{

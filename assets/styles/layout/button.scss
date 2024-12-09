@@ -1,3 +1,7 @@
+@use "../config" as *;
+@use "../core/icons" as *;
+@use "text" as *;
+
 %button{
   @extend %text-medium; display: inline-flex; border:1px solid; border-radius: 50rem; text-align: center;
   position: relative; padding: $space-s $space; transition: allow(color background border); cursor: pointer;
@@ -22,7 +26,7 @@
   &.is-loading{
     pointer-events: none;
     &:after{
-      content: ''; width: $space; height: $space; background: url("../../media/images/loader-black.svg") no-repeat center; 
+      content: ''; width: $space; height: $space; background: url("/assets/media/images/loader-black.svg") no-repeat center;
       background-size: contain;
     }
   }

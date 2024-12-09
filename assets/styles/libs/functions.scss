@@ -1,0 +1,97 @@
+@use "sass:list";
+@use "sass:math";
+@use "sass:string";
+
+// background
+
+@function fit(){
+  @return  unquote("no-repeat center; background-size: 100% 100%;")
+}
+
+@function cover(){
+  @return  unquote("no-repeat center; background-size: cover;")
+}
+
+@function contain(){
+  @return  unquote("no-repeat center; background-size: contain;")
+}
+
+@function fit-height(){
+  @return  unquote("no-repeat center; background-size: auto 100%;")
+}
+
+@function fit-width(){
+  @return  unquote("no-repeat center; background-size: 100% auto;")
+}
+
+// grid
+
+@function col($count){
+  @return unquote(math.div($count,$grip-columns)*100+'%')
+}
+
+// positions
+
+@function overlay($position:'absolute') {
+
+  @return string.unquote($position+'; left: 0; top: 0; right: 0; bottom: 0');
+}
+
+@function center($axis:false) {
+
+  @if( $axis == false ){
+
+    @return string.unquote('absolute; left: 50%; top: 50%; margin-top: -0.5em; margin-left: -0.5em; line-height: 100%');
+  }
+  @else if( $axis == 'x' ){
+
+    @return string.unquote('absolute; left: 50%; margin-left: -0.5em; line-height: 100%');
+  }
+  @else if( $axis == 'y' ){
+
+    @return string.unquote('absolute; top: 50%; margin-top: -0.5em; line-height: 100%');
+  }
+}
+
+// string
+
+@function str-replace($search, $replace, $string) {
+
+  $string : inspect($string);
+  $index  : str-index($string, $search);
+
+  @if $index {
+
+    @return str-slice($string, 1, $index - 1) + $replace + str-slice($string, $index + str-length($search));
+  }
+
+  @return $index;
+}
+
+// transitions
+
+@function allow($properties, $speed:0.3s, $easing:cubic-bezier(0.645, 0.045, 0.355, 1.000), $performance:true) {
+
+  $will-change : ();
+  $i           : 0;
+
+  @if($speed == false ){
+    $speed : 0.3s
+  }
+
+  @each $property in $properties {
+
+    $will-change : list.append($will-change, $property);
+    @if($i < list.length($properties)-1){
+      $will-change : list.append($will-change, string.unquote(','));
+    }
+    $i: $i+1;
+  }
+
+  @if($performance == true ){
+    @return $will-change+string.unquote('; transition-duration:')+$speed+string.unquote('; transition-timing-function:')+$easing+string.unquote('; will-change:')+$will-change+string.unquote(';');
+  }
+  @else{
+    @return $will-change+string.unquote('; transition-duration:')+$speed+string.unquote('; transition-timing-function:')+$easing+string.unquote(';');
+  }
+}

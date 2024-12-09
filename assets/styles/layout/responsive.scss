@@ -1,3 +1,5 @@
+@use "../config" as *;
+
 :root{
   @media #{$to-phone} {
     --space-xxxl: 6rem;

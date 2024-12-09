@@ -1,18 +1,8 @@
 @use "sass:list";
-
-
-@mixin icon($name, $position:'before') {
-
-  @if($position == 'before'){
-    &:before{ @extend %icon, %icon-#{$name} }
-  }
-  @else{
-    &:after{ @extend %icon, %icon-#{$name} }
-  }
-}
+@use "../config" as *;
 
 %icon{
-  font-family: fontello, sans-serif; text-transform: none; line-height: 1; font-size: $font-m;
+  font-family: fontello, sans-serif; text-transform: none; line-height: 1; font-size: 16px;
   font-style: normal; font-weight: normal; font-variant: normal; vertical-align: middle;
   -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
 }
@@ -37,4 +27,12 @@
   [icon="#{$id}"]:before, [icon-after="#{$id}"]:after{ @extend %icon-#{$id} }
 }
 
+@mixin icon($name, $position:'before') {
 
+  @if($position == 'before'){
+    &:before{ @extend %icon, %icon-#{$name} }
+  }
+  @else{
+    &:after{ @extend %icon, %icon-#{$name} }
+  }
+}

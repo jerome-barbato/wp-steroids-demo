@@ -1,3 +1,5 @@
+@use "/assets/styles/config" as *;
+
 .p-footer{
   margin-top: $space-section; background: $color-theme-alt; padding: $space 0;
   .container{ align-items: center }

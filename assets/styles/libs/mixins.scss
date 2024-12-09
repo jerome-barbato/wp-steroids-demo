@@ -1,0 +1,41 @@
+@use "sass:math";
+@use "sass:list";
+
+@mixin aspect-ratio($ratio) {
+  position: relative;
+  &:after {
+    display: block; content: ""; width: 100%; padding-top: math.div(1,$ratio) * 100%;
+  }
+}
+
+@mixin remaining-aspect-ratio($ratio, $remain) {
+  position: relative;
+  &:after {
+    display: block; content: ""; width: 100%;
+    padding-top: math.div(((math.div(1,$ratio))*(1-$remain)),$remain) * 100%;
+  }
+}
+
+@mixin scrollbar($size, $primary, $secondary: lighten($primary, 25%), $radius-thumb: 0, $radius-track: 0) {
+  &::-webkit-scrollbar { width:  $size; height: $size }
+  &::-webkit-scrollbar-thumb { background: $primary; border-radius: $radius-thumb }
+  &::-webkit-scrollbar-track { background: $secondary; border-radius: $radius-track }
+}
+
+@mixin placeholder {
+  &::-webkit-input-placeholder {@content}
+  &:-moz-placeholder           {@content}
+  &::-moz-placeholder          {@content}
+  &:-ms-input-placeholder      {@content}
+}
+
+@mixin line-clamp($line:2){
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: $line; /* number of lines to show */
+  line-clamp: $line;
+  -webkit-box-orient: vertical;
+}
+
+@mixin vcenter{ display: flex; align-items: center; flex-direction: column; justify-content: center; height: 100% }

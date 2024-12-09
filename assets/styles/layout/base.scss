@@ -1,3 +1,33 @@
+@use "../config" as *;
+@use "text" as *;
+
+:root{
+  --c-background: #{$color-background};
+  --c-text: #111;
+  --c-theme: #{$color-theme};
+  --c-theme-alt: #{$color-theme-alt};
+  --c-black: #111;
+  --c-white: #fff;
+  --header-h: 9rem;
+  --app-height: 100vh;
+  --app-init-height: 100vh;
+  --admin-h: 0px;
+  --footer-h: 22.5rem;
+  --c-border: rgba(0,0,0,0.2) ;
+  --c-border-input: #bdcde1;
+  --c-transparent: rgba(255,255,255,0.3) ;
+  --c-placeholder-color: #93B1D9;
+  --space-xl: 6rem;
+  --space-xxl: 8rem;
+  --space-xxxl: 10rem;
+  --space-section: 12rem;
+  --padding-section: 4rem;
+  --grid-gap: 8rem;
+  --grid-container-w: 114rem;
+  --font-title: 'inter', arial, serif;
+  --font-text: 'inter', arial, sans-serif;
+}
+
 html{
   scroll-behavior: smooth;
 }
@@ -107,7 +137,7 @@ dialog{
 .image-placeholder{
   background: $c-transparent; display: block; position: relative; aspect-ratio: 4/3;
   &:after{
-    position: overlay(); content: ''; background: url("../../media/images/logo.svg") no-repeat center;
+    position: overlay(); content: ''; background: url("/assets/media/images/logo.svg") no-repeat center;
     background-size: 50% auto; opacity: 0.2;
   }
 }

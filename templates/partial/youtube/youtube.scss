@@ -1,4 +1,7 @@
-.p-video{
+@use "/assets/styles/config" as *;
+@use "/assets/styles/core/icons" as *;
+
+.p-youtube{
   position: relative; cursor: pointer; background: $c-black;  display: block;
 
   img{

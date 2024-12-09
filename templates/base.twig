@@ -40,7 +40,7 @@
 		</script>
 	{% endif %}
 	{% block stylesheets %}
-		{{ encore_entry_link_tags('bundle') }}
+		{{ vite_entry_link_tags('app') }}
 	{% endblock %}
 	<link rel="stylesheet" href="{{ asset('print.css') }}" type="text/css" media="print">
 	{% block seo %}
@@ -68,7 +68,7 @@
 </div>
 
 {% block javascripts %}
-	{{ encore_entry_script_tags('bundle') }}
+	{{ vite_entry_script_tags('app') }}
 	{% if post|has_block('contact') %}
 		{{ enqueue_contact_form_scripts() }}
 	{% endif %}
@@ -76,39 +76,7 @@
 
 {{ function('wp_footer') }}
 
-{% if environment|default('production') != 'production' %}
-	<div id="dev-bundle-grid">
-		<style>
-			#dev-bundle-grid{ position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 99999; pointer-events: none; display: none }
-			#dev-bundle-grid .container{ height: 100%; border-right: solid 1px blue; border-left: solid 1px blue; opacity: 0.4 }
-			.dev-bundle-grid__wrapper{ max-width: 1920px; margin: auto; height: 100% }
-			.dev-bundle-grid__device{ height: 100%; display: flex }
-			.dev-bundle-grid__device div{ flex: 1; position: relative; padding: 0 2rem }
-			.dev-bundle-grid__device div + div{ border-left: solid 1px blue }
-			.dev-bundle-grid__device span{ width: 100%; height: 100%; background: red; opacity: 0.1; display: block }
-			@media screen and (min-width: 641px) { .dev-bundle-grid__device--mobile{ display: none }}
-			@media screen and (max-width: 640px) { .dev-bundle-grid__device--desktop{ display: none }}
-		</style>
-		<script>
-			var ctrlDown = false;
-			document.addEventListener("keydown", function(e) { if (e.keyCode === 17 || e.keyCode === 91) ctrlDown = true });
-			document.addEventListener("keydown", function(e) { if (ctrlDown && e.keyCode === 72 ){ e.preventDefault(); let g = document.getElementById('dev-bundle-grid'); if(g.style.display === 'block'){ localStorage.setItem('grid', 0); g.style.display = 'none'} else { localStorage.setItem('grid', '1'); g.style.display = 'block' }}});
-			document.addEventListener("keyup", function(e) { if (e.keyCode === 17 || e.keyCode === 91) ctrlDown = false });
+{% include 'partial/grid-debug.twig' %}
 
-			if(localStorage.getItem('grid') === '1')
-				document.getElementById('dev-bundle-grid').style.display = 'block'
-		</script>
-		<div class="dev-bundle-grid__wrapper">
-			<div class="container">
-				<div class="dev-bundle-grid__device dev-bundle-grid__device--desktop">
-					{% for i in 1..12 %}<div><span></span></div>{% endfor %}
-				</div>
-				<div class="dev-bundle-grid__device dev-bundle-grid__device--mobile">
-					{% for i in 1..6 %}<div><span></span></div>{% endfor %}
-				</div>
-			</div>
-		</div>
-	</div>
-{% endif %}
 </body>
 </html>

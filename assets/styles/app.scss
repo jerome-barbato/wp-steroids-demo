@@ -3,43 +3,64 @@
 *
 * Akhela.fr
 
-* Todo: replace @import with @use
 */
-
-@import "config";
-@import "reset";
-
+@use "reset";
 
 /*
-* Services
+* Core
 */
 
-@import "function/**/*.scss";
-@import "variable/**/*.scss";
-@import "mixin/**/*.scss";
-@import "misc/**/*.scss";
-@import "core/**/*.scss";
+//@use "core/*.scss";
+@use "core/animations";
+@use "core/fonts.scss";
+@use "core/icons.scss";
+@use "core/keyframes.scss";
+@use "core/mqpacker.scss";
+
+/*
+* Layout
+*/
+
+//@use "layout/*.scss";
+@use "layout/base.scss";
+@use "layout/button.scss";
+@use "layout/gutemberg.scss";
+@use "layout/responsive.scss";
+@use "layout/text.scss";
+@use "layout/unsupported-browsers.scss";
 
 
 /*
 * Vendors
 */
 
-@import "vendor/**/*.scss";
-
-
-/* Components
-*/
-@import "component/**/*.scss";
-
-
-/* Blocks
-*  Example : hero
-*/
-@import "../../templates/block/**/*.scss";
+//@use "vendor/*.scss";
+@use "vendor/aos.scss";
+@use "vendor/ecoindex.scss";
+@use "vendor/swiper.scss";
+@use "vendor/vuejs.scss";
 
 
 /* Partials
 *  Example : cta
 */
-@import "../../templates/partial/**/*.scss";
+//@use "../../templates/partial/**/*.scss";
+@use "../../templates/partial/burger/burger";
+@use "../../templates/partial/cta/cta";
+@use "../../templates/partial/footer/footer";
+@use "../../templates/partial/form/form";
+@use "../../templates/partial/header/header";
+@use "../../templates/partial/menu/menu";
+@use "../../templates/partial/youtube/youtube";
+
+
+/* Blocks
+*  Example : hero
+*/
+//@use "../../templates/block/**/*.scss";
+@use "../../templates/block/carousel/carousel";
+@use "../../templates/block/contact/contact";
+@use "../../templates/block/dropdown/dropdown";
+@use "../../templates/block/hero/hero";
+@use "../../templates/block/toggles/toggles";
+@use "../../templates/block/video/video";

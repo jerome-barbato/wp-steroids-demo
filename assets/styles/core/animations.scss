@@ -1,3 +1,5 @@
+@use "../config" as *;
+
 .fade-leave-active{ animation: fade-in reverse $animation-duration; animation-timing-function: $ease-in-out-cubic }
 .fade-enter-active{ animation: fade-in $animation-duration; animation-fill-mode: both; animation-timing-function: $ease-in-out-cubic; position: absolute; top: 0 }
 

@@ -1,4 +1,5 @@
 // Dummy queries for mqpaker, define media query order in generated css
+@use "../config" as *;
 
 @media #{$from-4k} {          .dummy{ order:1 } }
 @media #{$only-4k} {          .dummy{ order:1 } }
